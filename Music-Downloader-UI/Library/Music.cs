@@ -13,7 +13,7 @@ namespace MusicDownloader.Library
     public class Music
     {
         public List<int> version = new List<int> { 1, 3, 8 };
-        public bool Beta = true;
+        public bool Beta = false;
         private readonly string UpdateJsonUrl = "";
         public string api1 = "";
         public string api2 = "";
@@ -237,7 +237,7 @@ namespace MusicDownloader.Library
                 Console.Out.WriteLine("url=" + url);
                 WebClientPro wc = new WebClientPro();
                 //wc.Headers.Add(HttpRequestHeader.Cookie, cookie);
-                Stream s = wc.OpenRead(url + "&cookie=" + cookie);
+                Stream s = wc.OpenRead(url + (withcookie ? "&cookie=" + cookie : ""));
                 StreamReader sr = new StreamReader(s);
                 return sr.ReadToEnd();
             }
@@ -393,7 +393,7 @@ namespace MusicDownloader.Library
             return "";
         }
 
-        public string Download()
+        private string Download()
         {
             if (downloadlist[0].Api == 1)
             {
@@ -1414,88 +1414,92 @@ namespace MusicDownloader.Library
         /// <returns></returns>
         public List<MusicInfo> GetAlbum(string id, int api)
         {
-            if (api == 1)
+            switch (api)
             {
-                List<MusicInfo> res = new List<MusicInfo>();
-                string url = NeteaseApiUrl + "album?id=" + id;
-                NeteaseAlbum.Root json;
-                try
-                {
-                    json = JsonConvert.DeserializeObject<NeteaseAlbum.Root>(GetHTML(url));
-                }
-                catch
-                {
-                    return null;
-                }
-                for (int i = 0; i < json.songs.Count; i++)
-                {
-                    string singer = "";
-                    for (int x = 0; x < json.songs[i].ar.Count; x++)
+                case 1:
                     {
-                        singer += json.songs[i].ar[x].name + "、";
-                    }
-
-                    MusicInfo mi = new MusicInfo()
-                    {
-                        Title = json.songs[i].name,
-                        Album = json.album.name,
-                        Id = json.songs[i].id.ToString(),
-                        LrcUrl = NeteaseApiUrl + "lyric?id=" + json.songs[i].id.ToString(),
-                        PicUrl = json.songs[i].al.picUrl + "?param=300y300",
-                        Singer = singer.Substring(0, singer.Length - 1),
-                        Api = 1
-                    };
-
-                    res.Add(mi);
-                }
-                return res;
-            }
-            if (api == 2)
-            {
-                string url = QQApiUrl + "album/songs?albummid=" + id;
-                using (WebClientPro wc = new WebClientPro())
-                {
-                    StreamReader sr = new StreamReader(wc.OpenRead(url));
-                    string httpres = sr.ReadToEnd();
-                    QQAlbum.Root json = null;
-                    try
-                    {
-                        json = JsonConvert.DeserializeObject<QQAlbum.Root>(httpres);
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                    List<MusicInfo> res = new List<MusicInfo>();
-                    if (json.data.list == null || json.data.list.Count == 0)
-                    {
-                        return null;
-                    }
-                    for (int i = 0; i < json.data.list.Count; i++)
-                    {
-                        string singers = "";
-                        foreach (QQAlbum.singer singer in json.data.list[i].singer)
+                        List<MusicInfo> res = new List<MusicInfo>();
+                        string url = NeteaseApiUrl + "album?id=" + id;
+                        NeteaseAlbum.Root json;
+                        try
                         {
-                            singers += singer.title + "、";
+                            json = JsonConvert.DeserializeObject<NeteaseAlbum.Root>(GetHTML(url));
                         }
-                        singers = singers.Substring(0, singers.Length - 1);
-                        MusicInfo mi = new MusicInfo()
+                        catch
                         {
-                            Title = json.data.list[i].title,
-                            Album = json.data.list[i].album.title,
-                            Id = json.data.list[i].mid,
-                            LrcUrl = QQApiUrl + "lyric?songmid=" + json.data.list[i].mid,
-                            PicUrl = "https://y.gtimg.cn/music/photo_new/T002R500x500M000" + json.data.list[i].album.mid + ".jpg",
-                            Singer = singers,
-                            Api = 2,
-                            strMediaMid = json.data.list[i].ksong.mid
-                        };
-                        res.Add(mi);
+                            return null;
+                        }
+                        foreach (var t in json.songs)
+                        {
+                            string singer = "";
+                            foreach (var t1 in t.ar)
+                            {
+                                singer += t1.name + "、";
+                            }
+
+                            MusicInfo mi = new MusicInfo()
+                            {
+                                Title = t.name,
+                                Album = json.album.name,
+                                Id = t.id.ToString(),
+                                LrcUrl = NeteaseApiUrl + "lyric?id=" + t.id.ToString(),
+                                PicUrl = t.al.picUrl + "?param=300y300",
+                                Singer = singer.Substring(0, singer.Length - 1),
+                                Api = 1
+                            };
+
+                            res.Add(mi);
+                        }
+                        return res;
                     }
-                    return res;
-                }
+                case 2:
+                    {
+                        string url = QQApiUrl + "album/songs?albummid=" + id;
+                        using (WebClientPro wc = new WebClientPro())
+                        {
+                            StreamReader sr = new StreamReader(wc.OpenRead(url));
+                            string httpres = sr.ReadToEnd();
+                            QQAlbum.Root json = null;
+                            try
+                            {
+                                json = JsonConvert.DeserializeObject<QQAlbum.Root>(httpres);
+                            }
+                            catch
+                            {
+                                return null;
+                            }
+                            List<MusicInfo> res = new List<MusicInfo>();
+                            if (json.data.list == null || json.data.list.Count == 0)
+                            {
+                                return null;
+                            }
+                            for (int i = 0; i < json.data.list.Count; i++)
+                            {
+                                string singers = "";
+                                foreach (QQAlbum.singer singer in json.data.list[i].singer)
+                                {
+                                    singers += singer.title + "、";
+                                }
+                                singers = singers.Substring(0, singers.Length - 1);
+                                MusicInfo mi = new MusicInfo()
+                                {
+                                    Title = json.data.list[i].title,
+                                    Album = json.data.list[i].album.title,
+                                    Id = json.data.list[i].mid,
+                                    LrcUrl = QQApiUrl + "lyric?songmid=" + json.data.list[i].mid,
+                                    PicUrl = "https://y.gtimg.cn/music/photo_new/T002R500x500M000" + json.data.list[i].album.mid + ".jpg",
+                                    Singer = singers,
+                                    Api = 2,
+                                    strMediaMid = json.data.list[i].ksong.mid
+                                };
+                                res.Add(mi);
+                            }
+                            return res;
+                        }
+                    }
+                default:
+                    return null;
             }
-            return null;
         }
 
         /// <summary>

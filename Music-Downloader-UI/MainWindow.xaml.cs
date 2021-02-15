@@ -110,7 +110,7 @@ namespace MusicDownloader
                 Api2 = Tool.Config.Read("Source2") ?? ""/*"http://127.0.0.1:" + Api.port2.ToString() + "/"*/,
                 Cookie1 = Tool.Config.Read("Cookie1") ?? "",
                 AutoLowerQuality = bool.Parse(Tool.Config.Read("AutoLowerQuality") ?? "true"),
-                EnableLoacApi = bool.Parse(Tool.Config.Read("EnableLoacApi") ?? "false")
+                EnableLoacApi = bool.Parse(Tool.Config.Read("EnableLoacApi") ?? "true")
             };
             music = new Music(setting);
             HomePage = new SearchPage(music, setting);
@@ -195,7 +195,7 @@ namespace MusicDownloader
             Console.WriteLine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/MusicDownloader/FirstRun.m");
             if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/MusicDownloader/FirstRun.m"))
             {
-                if (AduMessageBox.ShowYesNo("建议阅读帮助", "欢迎", "是", "否") == MessageBoxResult.Yes)
+                if (AduMessageBox.ShowYesNo("建议阅读帮助并启用本地API", "欢迎", "是", "否") == MessageBoxResult.Yes)
                 {
                     Process.Start("https://www.nitianblog.com/?p=868");
                 }
