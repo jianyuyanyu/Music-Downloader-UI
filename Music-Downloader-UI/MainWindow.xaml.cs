@@ -93,6 +93,7 @@ namespace MusicDownloader
             MusicDownloader.Pages.SettingPage.SaveBlurEvent += BlurSave;
             MusicDownloader.Pages.SettingPage.EnableLoacApiEvent += EnableLoaclApi;
             Api.NotifyNpmEventHandle += NpmNotExist;
+            Api.NotifyZipEventHandle += Api_NotifyZipEventHandle; ;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             setting = new Setting()
             {
@@ -110,7 +111,7 @@ namespace MusicDownloader
                 Api2 = Tool.Config.Read("Source2") ?? ""/*"http://127.0.0.1:" + Api.port2.ToString() + "/"*/,
                 Cookie1 = Tool.Config.Read("Cookie1") ?? "",
                 AutoLowerQuality = bool.Parse(Tool.Config.Read("AutoLowerQuality") ?? "true"),
-                EnableLoacApi = bool.Parse(Tool.Config.Read("EnableLoacApi") ?? "true")
+                EnableLoacApi = bool.Parse(Tool.Config.Read("EnableLoacApi") ?? "false")
             };
             music = new Music(setting);
             HomePage = new SearchPage(music, setting);
@@ -141,6 +142,15 @@ namespace MusicDownloader
             {
                 Blur.Radius = double.Parse(Tool.Config.Read("Blur"));
             }
+        }
+
+        private void Api_NotifyZipEventHandle()
+        {
+            setting.EnableLoacApi = false;
+            Dispatcher.Invoke(new Action(() =>
+            {
+                AduMessageBox.Show("本地API文件下载失败", "提示");
+            }));
         }
 
         /// <summary>
@@ -187,7 +197,6 @@ namespace MusicDownloader
             sw.WriteLine(e.Message.ToString() + "/r/n" + e.StackTrace);
             sw.Flush();
             sw.Close();
-            MessageBox.Show("遇到未知错误，具体信息查看 " + Environment.CurrentDirectory + "\\Error.log");
         }
 
         private async void WindowX_ContentRendered(object sender, EventArgs e)
@@ -464,7 +473,11 @@ namespace MusicDownloader
 
                 await Task.Run(() =>
                 {
-                    Api.ApiStart(music.apiver, music.zipurl);
+                    bool r = Api.ApiStart(music.apiver, music.zipurl);
+                    if (!r)
+                    {
+                        Dispatcher.Invoke(new Action(() => { setting.EnableLoacApi = false; pb.Close(); AduMessageBox.Show("服务启动错误", "提示"); }));
+                    }
                     while (!Api.ok)
                     { }
                 });
@@ -487,7 +500,15 @@ namespace MusicDownloader
                 });
                 await Task.Run(() =>
                 {
-                    Api.ApiStart(music.apiver, music.zipurl);
+                    bool r = Api.ApiStart(music.apiver, music.zipurl);
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        if (!r)
+                        {
+                            AduMessageBox.Show("服务启动错误", "提示");
+                        }
+                    }));
+
                     while (!Api.ok)
                     { }
                 });
@@ -505,7 +526,10 @@ namespace MusicDownloader
 
         public void NpmNotExist()
         {
-            Dispatcher.Invoke(new Action(() => { AduMessageBox.Show("npm调用失败，程序即将退出\n如果再次启动仍出现提示请删除 (*.exe.config) 文件", "提示"); }));
+            Dispatcher.Invoke(new Action(() =>
+            {
+                setting.EnableLoacApi = false; AduMessageBox.Show("npm调用失败，程序即将退出\n如果再次启动仍出现提示请删除 (*.exe.config) 文件", "提示");
+            }));
         }
     }
 }

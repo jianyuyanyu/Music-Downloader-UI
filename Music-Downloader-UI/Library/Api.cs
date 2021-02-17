@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows;
+using Panuon.UI.Silver;
 
 namespace MusicDownloader.Library
 {
@@ -26,11 +27,13 @@ namespace MusicDownloader.Library
         public static bool nonodejs = false;
         public delegate void NotifyNpmNotExist();
         public static event NotifyNpmNotExist NotifyNpmEventHandle;
+        public delegate void NotifyZipNotExist();
+        public static event NotifyZipNotExist NotifyZipEventHandle;
         private static string re_ver = null;
         private static string re_zipurl = null;
         public static bool NodejsDownloadSuc = false;
 
-        public static void ApiStart(string ver, string zipurl)
+        public static bool ApiStart(string ver, string zipurl)
         {
             re_ver = ver;
             re_zipurl = zipurl;
@@ -51,7 +54,8 @@ namespace MusicDownloader.Library
                     sw.WriteLine(ver);
                     sw.Flush();
                     sw.Close();
-                    DownloadZip(zipurl);
+                    bool r = DownloadZip(zipurl);
+                    return false;
                 }
                 else
                 {
@@ -76,10 +80,17 @@ namespace MusicDownloader.Library
                 sw.Close();
                 DownloadZip(zipurl);
             }
+            return true;
         }
 
-        private static void DownloadZip(string zipurl)
+        private static bool DownloadZip(string zipurl)
         {
+            if (zipurl.IsNullOrEmpty())
+            {
+                if (NotifyZipEventHandle != null) NotifyZipEventHandle();
+                return false;
+            }
+
             if (Directory.Exists(path + "QQMusicApi"))
             {
                 Directory.Delete(path + "QQMusicApi", true);
@@ -99,6 +110,7 @@ namespace MusicDownloader.Library
             WebClient wc = new WebClient();
             wc.DownloadFileCompleted += Wc_DownloadFileCompleted;
             wc.DownloadFileAsync(new Uri(zipurl), path + "api.zip");
+            return true;
         }
 
         private static void Wc_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)

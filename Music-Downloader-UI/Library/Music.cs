@@ -12,8 +12,8 @@ namespace MusicDownloader.Library
 {
     public class Music
     {
-        public List<int> version = new List<int> { 1, 3, 8 };
-        public bool Beta = false;
+        public List<int> version = new List<int> { 1, 3, 9 };
+        public bool Beta = true;
         private readonly string UpdateJsonUrl = "";
         public string api1 = "";
         public string api2 = "";
@@ -22,10 +22,10 @@ namespace MusicDownloader.Library
             我的json格式,如果更改请重写下方Update()方法
             {
             "Version": [1,3,3],
-            "Cookie": "",
-            "Zip": "",
-            "Cookie1": "",
-            "ApiVer": "",
+            "Cookie": "",音源1cookie
+            "Zip": "",本地api下载链接
+            "Cookie1": "",音源2cookie
+            "ApiVer": "",本地api版本号
             "QQ": ""
             }
         */
