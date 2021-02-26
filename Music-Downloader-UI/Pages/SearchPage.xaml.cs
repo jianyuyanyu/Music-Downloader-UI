@@ -517,6 +517,7 @@ namespace MusicDownloader.Pages
         /// <param name="key"></param>
         private async void Search(string key)
         {
+            
             var pb = PendingBox.Show("搜索中...", null, false, Application.Current.MainWindow, new PendingBoxConfigurations()
             {
                 MinHeight = 110,
@@ -529,6 +530,12 @@ namespace MusicDownloader.Pages
                 SearchListItem.Clear();
                 musicinfo?.Clear();
                 int api = apiComboBox.SelectedIndex + 1;
+                if((api==1&&music.NeteaseApiUrl.IsNullOrEmpty())||(api==2&&music.QQApiUrl.IsNullOrEmpty()))
+                {
+                    AduMessageBox.Show("未设置API地址", "错误");
+                    pb.Close();
+                    return;
+                }
                 await Task.Run(() =>
                 {
                     musicinfo = music.Search(key, api);

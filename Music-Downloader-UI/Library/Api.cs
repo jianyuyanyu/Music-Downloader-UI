@@ -182,7 +182,7 @@ namespace MusicDownloader.Library
         {
             Console.WriteLine(e.Data);
             //不是内部或外部命令
-            if (e.Data.IndexOf("不是内部") != -1 || e.Data.IndexOf("外部命令") != -1)
+            if (e.Data.Replace("\r","").Replace("\n","").IndexOf("不是内部或外部命令") != -1)
             {
                 NotifyNpmEventHandle();
                 nonodejs = true;
@@ -399,6 +399,20 @@ namespace MusicDownloader.Library
         {
             NodejsDownloadSuc = true;
             Process.Start(path + Path.GetFileName(NodejsUrl));
+        }
+
+        public static void Fix()
+        {
+            Process p = new Process();
+            p.StartInfo.FileName = "CMD.exe";
+            p.StartInfo.CreateNoWindow = false;
+            p.StartInfo.WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.RedirectStandardError = false;
+            p.StartInfo.RedirectStandardOutput = false;
+            p.StartInfo.UseShellExecute = false;
+            p.Start();
+            p.StandardInput.WriteLine("npm install -g npm");
         }
     }
 }

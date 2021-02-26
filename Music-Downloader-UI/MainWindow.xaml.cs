@@ -107,8 +107,8 @@ namespace MusicDownloader
                 IfSearchResultFilter = bool.Parse(Tool.Config.Read("IfSearchResultFilter") ?? "true"),
                 SearchResultFilter = Tool.Config.Read("SearchResultFilter") ?? "",
                 TranslateLrc = int.Parse(Tool.Config.Read("TranslateLrc") ?? "0"),
-                Api1 = Tool.Config.Read("Source1") ?? ""/*"http://127.0.0.1:" + Api.port1.ToString() + "/"*/,
-                Api2 = Tool.Config.Read("Source2") ?? ""/*"http://127.0.0.1:" + Api.port2.ToString() + "/"*/,
+                Api1 = Tool.Config.Read("Source1") ?? "",
+                Api2 = Tool.Config.Read("Source2") ?? "",
                 Cookie1 = Tool.Config.Read("Cookie1") ?? "",
                 AutoLowerQuality = bool.Parse(Tool.Config.Read("AutoLowerQuality") ?? "true"),
                 EnableLoacApi = bool.Parse(Tool.Config.Read("EnableLoacApi") ?? "false")
@@ -305,7 +305,6 @@ namespace MusicDownloader
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            Api.StopApi();
             Close();
         }
 
