@@ -7,13 +7,15 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using static MusicDownloader.Library.Tool;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MusicDownloader.Library
 {
     public class Music
     {
         public List<int> version = new List<int> { 1, 3, 9 };
-        public bool Beta = true;
+        public bool Beta = false;
         private readonly string UpdateJsonUrl = "";
         public string api1 = "";
         public string api2 = "";
@@ -135,19 +137,19 @@ namespace MusicDownloader.Library
             this.setting = setting;
             if (setting.Api1 != "")
             {
-                NeteaseApiUrl = setting.Api1;
+                NeteaseApiUrl = decrypt(setting.Api1);
             }
             else
             {
-                NeteaseApiUrl = api1;
+                NeteaseApiUrl = decrypt(api1);
             }
             if (setting.Api2 != "")
             {
-                QQApiUrl = setting.Api2;
+                QQApiUrl = decrypt(setting.Api2);
             }
             else
             {
-                QQApiUrl = api2;
+                QQApiUrl = decrypt(api2);
             }
             if (setting.Cookie1 != "")
             {
@@ -1557,6 +1559,38 @@ namespace MusicDownloader.Library
                 return "http:" + Regex.Match(sr.ReadToEnd(), pattern).Value;
             }
             return "";
+        }
+
+        public static string decrypt(string s)
+        {
+            if (String.IsNullOrEmpty(s))
+            {
+                return s;
+            }
+            if (s.Substring(0, 1) == "$")
+            {
+                string _s = s.Substring(1);
+                byte[] inputByteArray = Convert.FromBase64String(_s);
+                using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
+                {
+                    des.Key = ASCIIEncoding.ASCII.GetBytes("String64");
+                    des.IV = ASCIIEncoding.ASCII.GetBytes("String64");
+                    MemoryStream ms = new MemoryStream();
+                    using (CryptoStream cs = new CryptoStream(ms, des.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(inputByteArray, 0, inputByteArray.Length);
+                        cs.FlushFinalBlock();
+                        cs.Close();
+                    }
+                    string str = Encoding.UTF8.GetString(ms.ToArray());
+                    ms.Close();
+                    return str;
+                }
+            }
+            else
+            {
+                return s;
+            }
         }
     }
 }

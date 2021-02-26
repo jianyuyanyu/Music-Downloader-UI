@@ -101,7 +101,7 @@
                 </WrapPanel>
                 <WrapPanel HorizontalAlignment="Center">
                     <Label Content="恢复默认背景" Foreground="White"/>
-                    <Button Background="#30FFFFFF" Name="ReBG" Content="恢复(重启生效)" FontSize="13" HorizontalAlignment="Left" Height="25" Margin="10,2,0,0" VerticalAlignment="Top" Width="150" Click="ReBG_Click"/>
+                    <Button Background="#30FFFFFF" Name="ReBG" Content="恢复(重启软件生效)" FontSize="13" HorizontalAlignment="Left" Height="25" Margin="10,2,0,0" VerticalAlignment="Top" Width="150" Click="ReBG_Click"/>
                 </WrapPanel>
                 <WrapPanel>
                     <Label Foreground="White" Margin="0 10 0 0" Content="自定义音源1"/>
@@ -124,7 +124,8 @@
                 <CheckBox Foreground="White" BorderThickness="0" pu:CheckBoxHelper.CheckBoxStyle="Standard" Name="localapiCheckBox" Margin="0 5 0 0" Content="启用本地API（启用前先安装node.js）" IsChecked="False" HorizontalAlignment="Center" VerticalAlignment="Top"/>
                 <Label Foreground="LightGray" HorizontalContentAlignment="Center"  Margin="0 -2 0 0" Width="380" Height="auto" Content="当无法下载音乐时请打开此模式以解决远程接口异常问题"/>
                 <Label Foreground="LightGray" HorizontalContentAlignment="Center" Margin="0 -12 0 0" Width="380" Height="auto" Content="勾选保存后自动开始部署本地接口"/>
-                <Button Background="#30FFFFFF" Click="DownloadNodejsButton_Click" Name="DownloadNodejsButton" Content="安装Node.js" FontSize="13" HorizontalAlignment="Center" Height="25" Margin="0,5,0,5" VerticalAlignment="Center" Width="150"/>
+                <Button Background="#30FFFFFF" Click="DownloadNodejsButton_Click" Name="DownloadNodejsButton" Content="安装Node.js(安装完后重启系统)" FontSize="13" HorizontalAlignment="Center" Height="25" Margin="0,5,0,5" VerticalAlignment="Center" Width="250"/>
+                <Button Background="#30FFFFFF" Click="FixNodejsButton_OnClick" Name="FixNodejsButton" Content="尝试修复本地API部署错误" FontSize="13" HorizontalAlignment="Center" Height="25" Margin="0,5,0,5" VerticalAlignment="Center" Width="250"/>
                     <Button Click="Button_Click" Block.TextAlignment="Center" Background="#30FFFFFF" Content="保存" Margin="0 10 0 10" HorizontalAlignment="Center" Width="100" Height="40" />
             </StackPanel>
         </ScrollViewer>
