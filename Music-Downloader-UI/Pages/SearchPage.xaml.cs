@@ -134,8 +134,6 @@ namespace MusicDownloader.Pages
         {
             try
             {
-                SearchListItem[List.SelectedIndex].IsSelected = !SearchListItem[List.SelectedIndex].IsSelected;
-                SearchListItem[List.SelectedIndex].OnPropertyChanged("IsSelected");
                 load_music(musicinfo[List.SelectedIndex].Api, musicinfo[List.SelectedIndex].Id, musicinfo[List.SelectedIndex].Title + " - " + musicinfo[List.SelectedIndex].Singer, List.SelectedIndex);
                 return;
             }
@@ -218,34 +216,42 @@ namespace MusicDownloader.Pages
         {
             this.Dispatcher.Invoke(new Action(() =>
             {
-                player.Open(new Uri(url));
-                player.Play();
-                timer.Elapsed += Timer_Elapsed;
-                timer.Enabled = true;
-                timer.AutoReset = true;
-                isPlaying = true;
-                CtrlButton.Text = "\xe61d";
-                CurrentMusicLabel.Text = text;
-                if (move_music_index == -1)
+                try
                 {
-                    currentmusicindex--;
-                }
-                else if (move_music_index == -2)
-                {
-                    currentmusicindex++;
-                }
-                else if (move_music_index >= 0)
-                {
-                    playlist.Clear();
-                    for (int i = 0; i < musicinfo.Count; i++)
+                    player.Open(new Uri(url));
+                    player.Play();
+                    timer.Elapsed += Timer_Elapsed;
+                    timer.Enabled = true;
+                    timer.AutoReset = true;
+                    isPlaying = true;
+                    CtrlButton.Text = "\xe61d";
+                    CurrentMusicLabel.Text = text;
+                    if (move_music_index == -1)
                     {
-                        CurrentMusicInfo cmi = new CurrentMusicInfo { Api = musicinfo[i].Api, Id = musicinfo[i].Id, Title = musicinfo[i].Title, Singer = musicinfo[i].Singer };
-                        playlist.Add(cmi);
+                        currentmusicindex--;
                     }
+                    else if (move_music_index == -2)
+                    {
+                        currentmusicindex++;
+                    }
+                    else if (move_music_index >= 0)
+                    {
+                        playlist.Clear();
+                        for (int i = 0; i < musicinfo.Count; i++)
+                        {
+                            CurrentMusicInfo cmi = new CurrentMusicInfo { Api = musicinfo[i].Api, Id = musicinfo[i].Id, Title = musicinfo[i].Title, Singer = musicinfo[i].Singer };
+                            playlist.Add(cmi);
+                        }
 
-                    currentmusicindex = move_music_index;
+                        currentmusicindex = move_music_index;
+                    }
+                    LoadingState.Text = "";
+
                 }
-                LoadingState.Text = "";
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception finish_load_music({0}): {1}", url, e);
+                }
 
             }));
 
@@ -266,8 +272,15 @@ namespace MusicDownloader.Pages
         {
             Slider.Dispatcher.Invoke(new Action(() =>
             {
-                Slider.Maximum = (int)player.NaturalDuration.TimeSpan.TotalSeconds;
-                Slider.Value = (int)player.Position.TotalSeconds;
+                if (player.NaturalDuration.HasTimeSpan)
+                {
+                    Slider.Maximum = (int)player.NaturalDuration.TimeSpan.TotalSeconds;
+                    Slider.Value = (int)player.Position.TotalSeconds;
+                }
+                else
+                {
+                    Console.WriteLine("Error :Timer_Elapsed() !player.NaturalDuration.HasTimeSpan");
+                }
             }));
 
         }
@@ -615,7 +628,7 @@ namespace MusicDownloader.Pages
         /// <param name="key"></param>
         private async void Search(string key)
         {
-            
+
             var pb = PendingBox.Show("搜索中...", null, false, Application.Current.MainWindow, new PendingBoxConfigurations()
             {
                 MinHeight = 110,
@@ -628,7 +641,7 @@ namespace MusicDownloader.Pages
                 SearchListItem.Clear();
                 musicinfo?.Clear();
                 int api = apiComboBox.SelectedIndex + 1;
-                if((api==1&&music.NeteaseApiUrl.IsNullOrEmpty())||(api==2&&music.QQApiUrl.IsNullOrEmpty()))
+                if ((api == 1 && music.NeteaseApiUrl.IsNullOrEmpty()) || (api == 2 && music.QQApiUrl.IsNullOrEmpty()))
                 {
                     AduMessageBox.Show("未设置API地址", "错误");
                     pb.Close();
@@ -1265,7 +1278,8 @@ namespace MusicDownloader.Pages
                         Content = err_text
                     });
                 }
-            }else
+            }
+            else
             {
                 Clipboard.SetText(set_text);
                 if (string.IsNullOrEmpty(ok_text))
@@ -1276,7 +1290,8 @@ namespace MusicDownloader.Pages
                         Content = "已复制"
                     });
 
-                }else
+                }
+                else
                 {
                     NoticeManager.NotifiactionShow.AddNotifiaction(new NotifiactionModel()
                     {
@@ -1388,6 +1403,14 @@ namespace MusicDownloader.Pages
 
         private void List_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (SearchListItem[List.SelectedIndex].IsSelected)
+                counter_checked_item--;
+            else
+                counter_checked_item++;
+            SearchListItem[List.SelectedIndex].IsSelected = !SearchListItem[List.SelectedIndex].IsSelected;
+            SearchListItem[List.SelectedIndex].OnPropertyChanged("IsSelected");
+            UpdateUI_LoadingState("选中(" + counter_checked_item + "/" + SearchListItem.Count + ")");
+
             menu_Play_PreviewMouseDown(this, null);
         }
 
@@ -1428,7 +1451,7 @@ namespace MusicDownloader.Pages
                     s.IsSelected = !s.IsSelected;
                     s.OnPropertyChanged("IsSelected");
                 }
-                if((string)List.CurrentCell.Column.Header == " ")
+                if ((string)List.CurrentCell.Column.Header == " ")
                     skipselect = true;
             }
             else
