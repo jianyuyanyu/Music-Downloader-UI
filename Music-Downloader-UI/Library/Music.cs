@@ -741,13 +741,22 @@ namespace MusicDownloader.Library
                 {
                     json = JsonConvert.DeserializeObject<QQmusicdetails>(html);
                 }
-                if (json.data == null)
+                if(json != null)
+                {
+                    if(json.data !=null)
+                        return json.data ?? "";
+                }
+                // if (json.data == null)
                 {
                     url = QQApiUrl + "song/url?id=" + id + "&type=128&mediaId=" + strMediaMid;
                     html = GetHTML(url, false);
                     if (!string.IsNullOrEmpty(html))
                     {
                         json = JsonConvert.DeserializeObject<QQmusicdetails>(html);
+                    }
+                    else
+                    {
+                        return "";
                     }
                 }
                 return json.data ?? "";
