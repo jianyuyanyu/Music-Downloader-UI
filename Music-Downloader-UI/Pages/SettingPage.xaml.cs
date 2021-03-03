@@ -20,6 +20,7 @@ using Panuon.UI.Silver.Core;
 using MessageBoxIcon = Panuon.UI.Silver.MessageBoxIcon;
 using Application = System.Windows.Application;
 using AduSkin.Controls.Metro;
+using System.Diagnostics;
 
 namespace MusicDownloader.Pages
 {
@@ -278,6 +279,11 @@ namespace MusicDownloader.Pages
         private void FixNodejsButton_OnClick(object sender, RoutedEventArgs e)
         {
             Api.Fix();
+        }
+
+        private void OpenApiPathButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MusicDownloader\\");
         }
     }
 }
