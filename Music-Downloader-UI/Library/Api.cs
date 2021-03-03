@@ -54,8 +54,7 @@ namespace MusicDownloader.Library
                     sw.WriteLine(ver);
                     sw.Flush();
                     sw.Close();
-                    bool r = DownloadZip(zipurl);
-                    return false;
+                    DownloadZip(zipurl);
                 }
                 else
                 {
