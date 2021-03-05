@@ -245,6 +245,12 @@
     <Resource Include="Images\Background.jpg" />
     <Resource Include="Images\Logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NeteaseCloudMusicApi\NeteaseCloudMusicApi.csproj">
+      <Project>{6ba56fe6-b254-4c2d-b745-52f65f1cd344}</Project>
+      <Name>NeteaseCloudMusicApi</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.6.0.0\build\Fody.targets" Condition="Exists('..\packages\Fody.6.0.0\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

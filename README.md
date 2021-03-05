@@ -25,6 +25,7 @@ WPF+C# 编写的音乐下载器<br>
 * AduSkin
 * TagLibSharp
 * [Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
+* [wwh1004/NeteaseCloudMusicApi](https://github.com/wwh1004/NeteaseCloudMusicApi)
 * [jsososo/QQMusicApi](https://github.com/jsososo/QQMusicApi)
 
 ## License

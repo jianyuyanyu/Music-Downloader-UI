@@ -628,7 +628,7 @@ namespace MusicDownloader.Pages
         /// <param name="key"></param>
         private async void Search(string key)
         {
-            
+
             var pb = PendingBox.Show("搜索中...", null, false, Application.Current.MainWindow, new PendingBoxConfigurations()
             {
                 MinHeight = 110,
@@ -641,12 +641,12 @@ namespace MusicDownloader.Pages
                 SearchListItem.Clear();
                 musicinfo?.Clear();
                 int api = apiComboBox.SelectedIndex + 1;
-                if ((api == 1 && music.NeteaseApiUrl.IsNullOrEmpty()) || (api == 2 && music.QQApiUrl.IsNullOrEmpty()))
-                {
-                    AduMessageBox.Show("未设置API地址", "错误");
-                    pb.Close();
-                    return;
-                }
+                //if ((api == 1 && music.NeteaseApiUrl.IsNullOrEmpty()) || (api == 2 && music.QQApiUrl.IsNullOrEmpty()))
+                //{
+                //    AduMessageBox.Show("未设置API地址", "错误");
+                //    pb.Close();
+                //    return;
+                //}
                 await Task.Run(() =>
                 {
                     musicinfo = music.Search(key, api);
@@ -785,7 +785,7 @@ namespace MusicDownloader.Pages
                 int api = apiComboBox.SelectedIndex + 1;
                 await Task.Run(() =>
                 {
-                    musicinfo = music.GetMusicList(id, api);
+                    musicinfo = music.GetMusicList(id, api).Result;
                 });
                 if (musicinfo == null)
                 {
@@ -1033,7 +1033,7 @@ namespace MusicDownloader.Pages
                 int api = apiComboBox.SelectedIndex + 1;
                 await Task.Run(() =>
                 {
-                    musicinfo = music.GetAlbum(id, api);
+                    musicinfo = music.GetAlbum(id, api).Result;
                 });
                 if (musicinfo == null)
                 {
@@ -1248,7 +1248,7 @@ namespace MusicDownloader.Pages
         {
             if (m.MVID != "0" && !string.IsNullOrEmpty(m.MVID))
             {
-                Clipboard.SetText(music.GetMvUrl(m.Api, m.MVID));
+                Clipboard.SetText(music.GetMvUrl(m.Api, m.MVID).Result);
                 NoticeManager.NotifiactionShow.AddNotifiaction(new NotifiactionModel()
                 {
                     Title = "提示",

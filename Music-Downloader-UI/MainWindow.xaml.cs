@@ -93,7 +93,7 @@ namespace MusicDownloader
             MusicDownloader.Pages.SettingPage.SaveBlurEvent += BlurSave;
             MusicDownloader.Pages.SettingPage.EnableLoacApiEvent += EnableLoaclApi;
             Api.NotifyNpmEventHandle += NpmNotExist;
-            Api.NotifyZipEventHandle += Api_NotifyZipEventHandle; ;
+            Api.NotifyZipEventHandle += Api_NotifyZipEventHandle;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             setting = new Setting()
             {
@@ -519,7 +519,7 @@ namespace MusicDownloader
                 }
                 pb.Close();
             }
-            music.NeteaseApiUrl = "http://127.0.0.1:" + Api.port1 + "/";
+            //music.NeteaseApiUrl = "http://127.0.0.1:" + Api.port1 + "/";
             music.QQApiUrl = "http://127.0.0.1:" + Api.port2 + "/";
         }
 

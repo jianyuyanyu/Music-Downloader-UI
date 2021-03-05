@@ -9,15 +9,17 @@ using System.Threading;
 using static MusicDownloader.Library.Tool;
 using System.Security.Cryptography;
 using System.Text;
+using NeteaseCloudMusicApi;
+using System.Threading.Tasks;
 
 namespace MusicDownloader.Library
 {
     public class Music
     {
-        public List<int> version = new List<int> { 1, 4, 0 };
-        public bool Beta = false;
+        public List<int> version = new List<int> { 1, 4, 1 };
+        public bool Beta = true;
         private readonly string UpdateJsonUrl = "";
-        public string api1 = "";
+        //public string api1 = "";
         public string api2 = "";
         public bool canJumpToBlog = true;
         /*
@@ -32,11 +34,13 @@ namespace MusicDownloader.Library
             }
         */
         #region 
-        public string NeteaseApiUrl = "";
+        //public string NeteaseApiUrl = "";
         public string QQApiUrl = "";
-        public string cookie = "";
+        public string cookie = ""; //可写死
         public string _cookie = "";
         #endregion
+
+        public CloudMusicApi capi;
 
         public Setting setting;
         public List<DownloadList> downloadlist = new List<DownloadList>();
@@ -81,6 +85,10 @@ namespace MusicDownloader.Library
                 if (setting.Cookie1 == "")
                 {
                     cookie = update.Cookie;
+                    if (!string.IsNullOrEmpty(cookie))
+                    {
+                        capi = new CloudMusicApi(cookie);
+                    }
                 }
             }
             bool needupdate = true;
@@ -137,11 +145,11 @@ namespace MusicDownloader.Library
             this.setting = setting;
             if (setting.Api1 != "")
             {
-                NeteaseApiUrl = decrypt(setting.Api1);
+                //NeteaseApiUrl = decrypt(setting.Api1);
             }
             else
             {
-                NeteaseApiUrl = decrypt(api1);
+                //NeteaseApiUrl = decrypt(api1);
             }
             if (setting.Api2 != "")
             {
@@ -159,6 +167,10 @@ namespace MusicDownloader.Library
             {
                 cookie = _cookie;
             }
+            if (!string.IsNullOrEmpty(cookie))
+            {
+                capi = new CloudMusicApi(cookie);
+            }
         }
 
         /// <summary>
@@ -169,7 +181,7 @@ namespace MusicDownloader.Library
         /// <returns></returns>
         public List<MusicInfo> Search(string Key, int api)
         {
-            Key = Uri.EscapeDataString(Key).Replace("&", "%26");
+            //Key = Uri.EscapeDataString(Key).Replace("&", "%26");
             if (api == 1)
             {
                 try
@@ -192,7 +204,7 @@ namespace MusicDownloader.Library
                     {
                         if (i == pagequantity - 1 && pagequantity >= 1)
                         {
-                            List<MusicInfo> Mi = NeteaseSearch(key, i + 1, remainder);
+                            List<MusicInfo> Mi = NeteaseSearch(key, i + 1, remainder).Result;
                             if (Mi != null)
                             {
                                 searchItem.AddRange(Mi);
@@ -200,7 +212,7 @@ namespace MusicDownloader.Library
                         }
                         else
                         {
-                            List<MusicInfo> Mi = NeteaseSearch(key, i + 1, 100);
+                            List<MusicInfo> Mi = NeteaseSearch(key, i + 1, 100).Result;
                             if (Mi != null)
                             {
                                 searchItem.AddRange(Mi);
@@ -256,33 +268,44 @@ namespace MusicDownloader.Library
         /// <param name="Page"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        private List<MusicInfo> NeteaseSearch(string Key, int Page = 1, int limit = 100)
+        async private Task<List<MusicInfo>> NeteaseSearch(string Key, int Page = 1, int limit = 100)
         {
             if (Key == null || Key == "")
             {
                 return null;
             }
             string offset = ((Page - 1) * 100).ToString();
-            string url = NeteaseApiUrl + "search?keywords=" + Key + "&limit=" + limit.ToString() + "&offset=" + offset;
-            string json = GetHTML(url);
-            if (json == null || json == "")
+            var queries = new Dictionary<string, object>();
+            queries["keywords"] = Key;
+            queries["limit"] = limit.ToString();
+            queries["offset"] = offset;
+            var json = await capi.RequestAsync(CloudMusicApiProviders.Search, queries);
+            //string url = NeteaseApiUrl + "search?keywords=" + Key + "&limit=" + limit.ToString() + "&offset=" + offset;
+            //string json = GetHTML(url);
+            //if (json == null || json == "")
+            if (!CloudMusicApi.IsSuccess(json))
             {
                 return null;
             }
-            Json.SearchResultJson.Root srj = JsonConvert.DeserializeObject<Json.SearchResultJson.Root>(json);
+            //Json.SearchResultJson.Root srj = JsonConvert.DeserializeObject<Json.SearchResultJson.Root>(_json.ToString());
             List<Json.MusicInfo> ret = new List<Json.MusicInfo>();
-            if (srj.result.songs == null)
+            if (json["result"]["songs"] /*srj.result.songs*/ == null)
             {
                 return null;
             }
             string ids = "";
-            for (int i = 0; i < srj.result.songs.Count; i++)
+            for (int i = 0; i < (int)json["result"]["songCount"] / 6/*srj.result.songs.Count*/; i++)
             {
-                ids += srj.result.songs[i].id + ",";
+                ids += /*srj.result.songs*/json["result"]["songs"][i]["id"] + ",";
             }
-            string _u = NeteaseApiUrl + "song/detail?ids=" + ids.Substring(0, ids.Length - 1);
-            string j = GetHTML(_u);
-            Json.NeteaseMusicDetails.Root mdr = JsonConvert.DeserializeObject<Json.NeteaseMusicDetails.Root>(j);
+
+            //string _u = NeteaseApiUrl + "song/detail?ids=" + ids.Substring(0, ids.Length - 1);
+            queries = new Dictionary<string, object>();
+            queries["ids"] = ids.Substring(0, ids.Length - 1);
+            var j = await capi.RequestAsync(CloudMusicApiProviders.SongDetail, queries);
+            //string j = GetHTML(_u);
+
+            Json.NeteaseMusicDetails.Root mdr = JsonConvert.DeserializeObject<Json.NeteaseMusicDetails.Root>(j.ToString());
             for (int i = 0; i < mdr.songs.Count; i++)
             {
                 string singer = "";
@@ -295,11 +318,14 @@ namespace MusicDownloader.Library
                 {
                     singer = "群星.";
                 }
+                //queries = new Dictionary<string, object>();
+                //queries["id"] = mdr.songs[i].id.ToString();
+                //var _j = await capi.RequestAsync(CloudMusicApiProviders.Lyric, queries);
                 Json.MusicInfo mi = new Json.MusicInfo()
                 {
                     Album = mdr.songs[i].al.name,
                     Id = mdr.songs[i].id.ToString(),
-                    LrcUrl = NeteaseApiUrl + "lyric?id=" + mdr.songs[i].id.ToString(),
+                    LrcUrl = null,
                     PicUrl = mdr.songs[i].al.picUrl + "?param=300y300",
                     Singer = singer.Substring(0, singer.Length - 1),
                     Title = mdr.songs[i].name,
@@ -395,13 +421,19 @@ namespace MusicDownloader.Library
             return "";
         }
 
-        private string Download()
+        private async Task<string> Download()
         {
             if (downloadlist[0].Api == 1)
             {
-                string u = NeteaseApiUrl + "song/url?id=" + downloadlist[0].Id + "&br=" + downloadlist[0].Quality;
+                var queries = new Dictionary<string, object>();
+                queries["id"] = downloadlist[0].Id;
+                queries["br"] = downloadlist[0].Quality;
+                
+                var u = await capi.RequestAsync(CloudMusicApiProviders.SongUrl, queries);
+                //string u = NeteaseApiUrl + "song/url?id=" + downloadlist[0].Id + "&br=" + downloadlist[0].Quality;
                 //??接口本身就会降音质
-                Json.GetUrl.Root urls = JsonConvert.DeserializeObject<Json.GetUrl.Root>(GetHTML(u));
+                //Json.GetUrl.Root urls = JsonConvert.DeserializeObject<Json.GetUrl.Root>(GetHTML(u));
+                Json.GetUrl.Root urls = JsonConvert.DeserializeObject<Json.GetUrl.Root>(u.ToString());
                 //检测音质是否正确
                 if (downloadlist[0].Quality == "999000")
                 {
@@ -789,7 +821,7 @@ namespace MusicDownloader.Library
         /// <summary>
         /// 下载线程
         /// </summary>
-        private void _Download()
+        private async void _Download()
         {
             while (downloadlist.Count != 0)
             {
@@ -802,7 +834,7 @@ namespace MusicDownloader.Library
                     continue;
                 }
                 downloadlist[0].State = "正在下载音乐";
-                Download();
+                await Download();
                 if (downloadlist[0].Url == null)
                 {
                     downloadlist[0].State = "无版权";
@@ -903,9 +935,12 @@ namespace MusicDownloader.Library
                                 if (downloadlist[0].Api == 1)
                                 {
                                     string savename = savepath + "\\" + filename.Replace(".flac", ".lrc").Replace(".mp3", ".lrc");
-                                    StreamReader sr = new StreamReader(wc.OpenRead(downloadlist[0].LrcUrl));
-                                    string json = sr.ReadToEnd();
-                                    NeteaseLrc.Root lrc = JsonConvert.DeserializeObject<NeteaseLrc.Root>(json);
+                                    var queries = new Dictionary<string, object>();
+                                    queries["id"] = downloadlist[0].Id;
+                                    var json = await capi.RequestAsync(CloudMusicApiProviders.Lyric, queries);
+                                    //StreamReader sr = new StreamReader(wc.OpenRead(downloadlist[0].LrcUrl));
+                                    //string json = sr.ReadToEnd();
+                                    NeteaseLrc.Root lrc = JsonConvert.DeserializeObject<NeteaseLrc.Root>(json.ToString());
                                     if (setting.TranslateLrc == 0)
                                     {
                                         Lrc = lrc.lrc.lyric ?? "";
@@ -1043,7 +1078,7 @@ namespace MusicDownloader.Library
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Wc_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        private async void Wc_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
             string Lrc = "";
             string savepath = "";
@@ -1114,9 +1149,12 @@ namespace MusicDownloader.Library
                         if (downloadlist[0].Api == 1)
                         {
                             string savename = savepath + "\\" + filename.Replace(".flac", ".lrc").Replace(".mp3", ".lrc");
-                            StreamReader sr = new StreamReader(wc.OpenRead(downloadlist[0].LrcUrl));
-                            string json = sr.ReadToEnd();
-                            NeteaseLrc.Root lrc = JsonConvert.DeserializeObject<NeteaseLrc.Root>(json);
+                            //StreamReader sr = new StreamReader(wc.OpenRead(downloadlist[0].LrcUrl));
+                            //string json = sr.ReadToEnd();
+                            var queries = new Dictionary<string, object>();
+                            queries["id"] = downloadlist[0].Id;
+                            var json = await capi.RequestAsync(CloudMusicApiProviders.Lyric, queries);
+                            NeteaseLrc.Root lrc = JsonConvert.DeserializeObject<NeteaseLrc.Root>(json.ToString());
                             if (setting.TranslateLrc == 0)
                             {
                                 Lrc = lrc.lrc.lyric ?? "";
@@ -1252,14 +1290,18 @@ namespace MusicDownloader.Library
         /// <summary>
         ///解析歌单，为了稳定每次请求100歌曲信息，所以解析歌单的方法分为两部分，这个方法根据歌曲数量分解请求
         /// </summary>
-        public List<MusicInfo> GetMusicList(string Id, int api)
+        public async Task<List<MusicInfo>> GetMusicList(string Id, int api)
         {
             if (api == 1)
             {
                 Musiclist.Root musiclistjson = new Musiclist.Root();
                 try
                 {
-                    musiclistjson = JsonConvert.DeserializeObject<Musiclist.Root>(GetHTML(NeteaseApiUrl + "playlist/detail?id=" + Id));
+                    var queries = new Dictionary<string, object>();
+                    queries["id"] = Id;
+                    var j = await capi.RequestAsync(CloudMusicApiProviders.PlaylistDetail, queries);
+                    //musiclistjson = JsonConvert.DeserializeObject<Musiclist.Root>(GetHTML(NeteaseApiUrl + "playlist/detail?id=" + Id));
+                    musiclistjson = JsonConvert.DeserializeObject<Musiclist.Root>(j.ToString());
                 }
                 catch
                 {
@@ -1305,13 +1347,13 @@ namespace MusicDownloader.Library
                                 _ids += _id[i * 100 + x] + ",";
                             }
                         }
-                        re.AddRange(_GetNeteaseMusicList(_ids.Substring(0, _ids.Length - 1)));
+                        re.AddRange(_GetNeteaseMusicList(_ids.Substring(0, _ids.Length - 1)).Result);
                     }
                     return re;
                 }
                 else
                 {
-                    return _GetNeteaseMusicList(ids);
+                    return _GetNeteaseMusicList(ids).Result;
                 }
             }
             else if (api == 2)
@@ -1365,14 +1407,22 @@ namespace MusicDownloader.Library
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        private List<MusicInfo> _GetNeteaseMusicList(string ids)
+        private async Task<List<MusicInfo>> _GetNeteaseMusicList(string ids)
         {
             List<Json.MusicInfo> ret = new List<Json.MusicInfo>();
-            string _u = NeteaseApiUrl + "song/detail?ids=" + ids;
-            string j = GetHTML(_u);
+            var queries = new Dictionary<string, object>();
+            queries["ids"] = ids;
+            string j = (await capi.RequestAsync(CloudMusicApiProviders.SongDetail, queries)).ToString();
+            //string _u = NeteaseApiUrl + "song/detail?ids=" + ids;
+            //string j = GetHTML(_u);
             Json.NeteaseMusicDetails.Root mdr = JsonConvert.DeserializeObject<Json.NeteaseMusicDetails.Root>(j);
-            string u = NeteaseApiUrl + "song/url?id=" + ids + "&br=" + setting.DownloadQuality;
-            Json.GetUrl.Root urls = JsonConvert.DeserializeObject<Json.GetUrl.Root>(GetHTML(u));
+            //string u = NeteaseApiUrl + "song/url?id=" + ids + "&br=" + setting.DownloadQuality;
+            queries = new Dictionary<string, object>();
+            queries["id"] = ids;
+            queries["br"] = setting.DownloadQuality;
+            var _j = await capi.RequestAsync(CloudMusicApiProviders.SongUrl, queries);
+            //Json.GetUrl.Root urls = JsonConvert.DeserializeObject<Json.GetUrl.Root>(GetHTML(u));
+            Json.GetUrl.Root urls = JsonConvert.DeserializeObject<Json.GetUrl.Root>(_j.ToString());
             for (int i = 0; i < mdr.songs.Count; i++)
             {
                 string singer = "";
@@ -1393,11 +1443,14 @@ namespace MusicDownloader.Library
                     }
                 }
 
+                queries = new Dictionary<string, object>();
+                queries["id"] = mdr.songs[i].id.ToString();
+                var a = await capi.RequestAsync(CloudMusicApiProviders.Lyric, queries);
                 MusicInfo mi = new MusicInfo()
                 {
                     Album = mdr.songs[i].al.name,
                     Id = mdr.songs[i].id.ToString(),
-                    LrcUrl = NeteaseApiUrl + "lyric?id=" + mdr.songs[i].id.ToString(),
+                    LrcUrl = a.ToString(),
                     PicUrl = mdr.songs[i].al.picUrl + "?param=300y300",
                     Singer = singer.Substring(0, singer.Length - 1),
                     Title = mdr.songs[i].name,
@@ -1414,14 +1467,18 @@ namespace MusicDownloader.Library
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public List<MusicInfo> GetAlbum(string id, int api)
+        public async Task<List<MusicInfo>> GetAlbum(string id, int api)
         {
             switch (api)
             {
                 case 1:
                     {
+                        var queries = new Dictionary<string, object>();
+                        queries["id"] = id;
+                        var j = await capi.RequestAsync(CloudMusicApiProviders.Album, queries);
                         List<MusicInfo> res = new List<MusicInfo>();
-                        string url = NeteaseApiUrl + "album?id=" + id;
+                        //string url = NeteaseApiUrl + "album?id=" + id;
+                        string url = j.ToString();
                         NeteaseAlbum.Root json;
                         try
                         {
@@ -1438,13 +1495,15 @@ namespace MusicDownloader.Library
                             {
                                 singer += t1.name + "、";
                             }
-
+                            queries = new Dictionary<string, object>();
+                            queries["id"] = t.id.ToString();
+                            var a = await capi.RequestAsync(CloudMusicApiProviders.Lyric, queries);
                             MusicInfo mi = new MusicInfo()
                             {
                                 Title = t.name,
                                 Album = json.album.name,
                                 Id = t.id.ToString(),
-                                LrcUrl = NeteaseApiUrl + "lyric?id=" + t.id.ToString(),
+                                LrcUrl = a.ToString(),
                                 PicUrl = t.al.picUrl + "?param=300y300",
                                 Singer = singer.Substring(0, singer.Length - 1),
                                 Api = 1
@@ -1536,16 +1595,19 @@ namespace MusicDownloader.Library
             }
         }
 
-        public string GetMvUrl(int api, string id)
+        public async Task<string> GetMvUrl(int api, string id)
         {
             string url = null;
             if (api == 1)
             {
-                url = NeteaseApiUrl + "mv/url?id=" + id;
-                WebClientPro wc = new WebClientPro();
-                StreamReader sr = new StreamReader(wc.OpenRead(url));
+                var queries = new Dictionary<string, object>();
+                queries["id"] = id;
+                var j = await capi.RequestAsync(CloudMusicApiProviders.MvUrl, queries);
+                //url = NeteaseApiUrl + "mv/url?id=" + id;
+                //WebClientPro wc = new WebClientPro();
+                //StreamReader sr = new StreamReader(wc.OpenRead(url));
                 string pattern = "(?<=\"url\":\").+?(?=\")";
-                return Regex.Match(sr.ReadToEnd(), pattern).Value;
+                return Regex.Match(j.ToString(), pattern).Value;
             }
             if (api == 2)
             {
