@@ -459,7 +459,7 @@ namespace MusicDownloader
 
         public async void EnableLoaclApi()
         {
-            if (ApiUpdateInfo == "ApiUpdate" || !Directory.Exists(Api.ApiFilePath1) || !Directory.Exists(Api.ApiFilePath2))
+            if (ApiUpdateInfo == "ApiUpdate" /*|| !Directory.Exists(Api.ApiFilePath1)*/ || !Directory.Exists(Api.ApiFilePath2))
             {
 
                 IPendingHandler pb = PendingBox.Show("初始化信息接口中...", null, false, Application.Current.MainWindow, new PendingBoxConfigurations()

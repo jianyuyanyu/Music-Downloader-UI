@@ -13,12 +13,12 @@ namespace MusicDownloader.Library
 {
     public static class Api
     {
-        public static string ApiFilePath1 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MusicDownloader\\" + "NeteaseCloudMusicApi";
+        //public static string ApiFilePath1 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MusicDownloader\\" + "NeteaseCloudMusicApi";
         public static string ApiFilePath2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MusicDownloader\\" + "QQMusicApi";
-        private static Process p1 = new Process();
+        //private static Process p1 = new Process();
         private static Process p2 = new Process();
         private static string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MusicDownloader\\";
-        public static int port1 = 3000;
+        //public static int port1 = 3000;
         public static int port2 = 3300;
         public static bool ok = false;
         public static string qq = "";
@@ -47,7 +47,7 @@ namespace MusicDownloader.Library
                 StreamReader sr = new StreamReader(path + "Api.txt");
                 string d = sr.ReadToEnd().Replace("\r", "").Replace("\n", "").Replace(" ", "");
                 sr.Close();
-                if (ver != d || !Directory.Exists(ApiFilePath1) || !Directory.Exists(ApiFilePath2))
+                if (ver != d || /*!Directory.Exists(ApiFilePath1) ||*/ !Directory.Exists(ApiFilePath2))
                 {
                     File.Delete(path + "Api.txt");
                     StreamWriter sw = new StreamWriter(path + "Api.txt");
@@ -58,15 +58,15 @@ namespace MusicDownloader.Library
                 }
                 else
                 {
-                    while (PortInUse(port1))
-                    {
-                        port1++;
-                    }
+                    //while (PortInUse(port1))
+                    //{
+                    //    port1++;
+                    //}
                     while (PortInUse(port2))
                     {
                         port2++;
                     }
-                    StartApi(p1, ApiFilePath1, port1.ToString(), 1);
+                    //StartApi(p1, ApiFilePath1, port1.ToString(), 1);
                     StartApi(p2, ApiFilePath2, port2.ToString(), 2);
                     ok = true;
                 }
@@ -94,10 +94,10 @@ namespace MusicDownloader.Library
             {
                 Directory.Delete(path + "QQMusicApi", true);
             }
-            if (Directory.Exists(path + "NeteaseCloudMusicApi"))
-            {
-                Directory.Delete(path + "NeteaseCloudMusicApi", true);
-            }
+            //if (Directory.Exists(path + "NeteaseCloudMusicApi"))
+            //{
+            //    Directory.Delete(path + "NeteaseCloudMusicApi", true);
+            //}
             if (File.Exists(path + "INSTALL1.txt"))
             {
                 File.Delete(path + "INSTALL1.txt");
@@ -116,15 +116,15 @@ namespace MusicDownloader.Library
         {
             ZipFile.ExtractToDirectory(path + "api.zip", path);
             File.Delete(path + "api.zip");
-            while (PortInUse(port1))
-            {
-                port1++;
-            }
+            //while (PortInUse(port1))
+            //{
+            //    port1++;
+            //}
             while (PortInUse(port2))
             {
                 port2++;
             }
-            StartApi(p1, ApiFilePath1, port1.ToString(), 1);
+            //StartApi(p1, ApiFilePath1, port1.ToString(), 1);
             StartApi(p2, ApiFilePath2, port2.ToString(), 2);
             ok = true;
         }
@@ -145,10 +145,10 @@ namespace MusicDownloader.Library
             p.Start();
             p.BeginOutputReadLine();
             p.BeginErrorReadLine();
-            if (_port == port1.ToString() && !File.Exists(path + "INSTALL1.txt"))
-            {
-                p.StandardInput.WriteLine("npm install --registry=https://registry.npm.taobao.org");
-            }
+            //if (_port == port1.ToString() && !File.Exists(path + "INSTALL1.txt"))
+            //{
+            //    p.StandardInput.WriteLine("npm install --registry=https://registry.npm.taobao.org");
+            //}
 
             if (_port == port2.ToString() && !File.Exists(path + "INSTALL2.txt"))
             {
@@ -223,20 +223,20 @@ namespace MusicDownloader.Library
         {
             if (e.Data.IndexOf("npm start") != -1 && !nonodejs)
             {
-                if (_port == port1.ToString())
-                {
-                    StreamWriter sw = new StreamWriter(path + "INSTALL1.txt");
-                    sw.WriteLine("true");
-                    sw.Flush();
-                    sw.Close();
-                }
-                else
-                {
+                //if (_port == port1.ToString())
+                //{
+                //    StreamWriter sw = new StreamWriter(path + "INSTALL1.txt");
+                //    sw.WriteLine("true");
+                //    sw.Flush();
+                //    sw.Close();
+                //}
+                //else
+                //{
                     StreamWriter sw = new StreamWriter(path + "INSTALL2.txt");
                     sw.WriteLine("true");
                     sw.Flush();
                     sw.Close();
-                }
+                //}
             }
             if (e.Data.IndexOf("http://127.0.0.1:" + _port) != -1 || e.Data.IndexOf("http://localhost:" + _port) != -1)
                 _isinstall = true;
@@ -340,10 +340,10 @@ namespace MusicDownloader.Library
 
         public static void GetPort()
         {
-            while (PortInUse(port1))
-            {
-                port1++;
-            }
+            //while (PortInUse(port1))
+            //{
+            //    port1++;
+            //}
             while (PortInUse(port2))
             {
                 port2++;
