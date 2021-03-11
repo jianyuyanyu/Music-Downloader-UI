@@ -377,13 +377,13 @@ namespace MusicDownloader
             }
         }
 
-        private void Donat_Checked(object sender, RoutedEventArgs e)
-        {
-            if ((bool)Donat.IsChecked)
-            {
-                frame.Content = Donate;
-            }
-        }
+        //private void Donat_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    if ((bool)Donat.IsChecked)
+        //    {
+        //        frame.Content = Donate;
+        //    }
+        //}
 
         private void Feedback_Checked(object sender, RoutedEventArgs e)
         {

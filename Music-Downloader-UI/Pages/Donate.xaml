@@ -19,16 +19,10 @@
             <ColumnDefinition Width="25"/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-            <Border BorderBrush="Black" BorderThickness="1">
-                <Image Stretch="Fill" Source="/Images/alipay.png"/>
-            </Border>
-            <TextBlock Text="支付宝" FontSize="15" HorizontalAlignment="Center" Margin="0 2 0 0"/>
+            <Border BorderBrush="Black" BorderThickness="1"/>
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center">
-            <Border BorderBrush="Black" BorderThickness="1">
-                <Image Stretch="Fill" Source="/Images/wechatpay.png"/>
-            </Border>
-            <TextBlock Text="微信" FontSize="15" HorizontalAlignment="Center" Margin="0 2 0 0"/>
+            <Border BorderBrush="Black" BorderThickness="1"/>
         </StackPanel>
     </Grid>
 </Page>
