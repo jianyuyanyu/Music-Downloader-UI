@@ -131,6 +131,7 @@ namespace MusicDownloader.Library
 
         private static void StartApi(Process p, string ApiFilePath, string port, int type)
         {
+            p = new Process();
             string comm = "set PORT=" + port;
             _port = port;
             p.StartInfo.FileName = "CMD.exe";

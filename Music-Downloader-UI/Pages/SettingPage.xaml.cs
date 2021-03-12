@@ -138,7 +138,7 @@ namespace MusicDownloader.Pages
                 Tool.Config.Write("Source1", "");
                 //music.NeteaseApiUrl = music.api1;
             }
-            if (Source2textBox.Text != "" && Source2textBox.Text != null && Source2textBox.Text != "http://example:port/")
+            if (Source2textBox.Text != "" && Source2textBox.Text != null && Source2textBox.Text != "http://example:port/" && setting.EnableLoacApi == false)
             {
                 Tool.Config.Write("Source2", Source2textBox.Text);
                 music.QQApiUrl = Music.decrypt(Source2textBox.Text);
@@ -182,13 +182,14 @@ namespace MusicDownloader.Pages
             else
             {
                 //if (string.IsNullOrEmpty(setting.Api1))
-                    //music.NeteaseApiUrl = Music.decrypt(music.api1);
+                //music.NeteaseApiUrl = Music.decrypt(music.api1);
                 //else
-                    //music.NeteaseApiUrl = Music.decrypt(setting.Api1);
+                //music.NeteaseApiUrl = Music.decrypt(setting.Api1);
                 if (string.IsNullOrEmpty(setting.Api2))
                     music.QQApiUrl = Music.decrypt(music.api2);
                 else
                     music.QQApiUrl = Music.decrypt(setting.Api2);
+                Api.ok = false;
                 Api.StopApi();
             }
 

@@ -78,7 +78,7 @@
                  Background="#20FFFFFF"
                  FontSize="13"
                  TextWrapping="Wrap"
-                 Text="搜索(歌名/歌手/ID)" PreviewKeyDown="searchTextBox_Click" TabIndex="1" Grid.Column="1" GotFocus="searchTextBox_GotFocus" LostFocus="searchTextBox_LostFocus"/>
+                 Text="搜索(歌名/歌手)" PreviewKeyDown="searchTextBox_Click" TabIndex="1" Grid.Column="1" GotFocus="searchTextBox_GotFocus" LostFocus="searchTextBox_LostFocus"/>
             <Button x:Name="searchButton" Click="searchButton_Click" Height="35" Width="20" HorizontalAlignment="Right" Margin="0 0 8 0"
                 pu:ButtonHelper.ButtonStyle="Link"
                 Content="&#xF002;"

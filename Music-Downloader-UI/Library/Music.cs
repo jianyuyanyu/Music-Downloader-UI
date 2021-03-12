@@ -428,7 +428,7 @@ namespace MusicDownloader.Library
                 var queries = new Dictionary<string, object>();
                 queries["id"] = downloadlist[0].Id;
                 queries["br"] = downloadlist[0].Quality;
-                
+
                 var u = await capi.RequestAsync(CloudMusicApiProviders.SongUrl, queries);
                 //string u = NeteaseApiUrl + "song/url?id=" + downloadlist[0].Id + "&br=" + downloadlist[0].Quality;
                 //??接口本身就会降音质
@@ -772,6 +772,11 @@ namespace MusicDownloader.Library
                 if (!string.IsNullOrEmpty(html))
                 {
                     json = JsonConvert.DeserializeObject<QQmusicdetails>(html);
+                }
+                using (WebClient wc = new WebClient())
+                {
+                    HttpWebRequest wr = (HttpWebRequest)HttpWebRequest.Create(json.data);
+                    try { HttpWebResponse r = (HttpWebResponse)wr.GetResponse(); } catch { json.data = null; }
                 }
                 if (json.data == null)
                 {
