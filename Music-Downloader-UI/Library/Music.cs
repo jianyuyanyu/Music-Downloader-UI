@@ -1434,6 +1434,7 @@ namespace MusicDownloader.Library
                 MusicInfo mi = new MusicInfo()
                 {
                     Album = mdr.songs[i].al.name,
+                    MVID = mdr.songs[i].mv.ToString(),
                     Id = mdr.songs[i].id.ToString(),
                     LrcUrl = null,
                     PicUrl = mdr.songs[i].al.picUrl + "?param=300y300",
@@ -1481,7 +1482,8 @@ namespace MusicDownloader.Library
                                 LrcUrl = null,
                                 PicUrl = t.al.picUrl + "?param=300y300",
                                 Singer = singer.Substring(0, singer.Length - 1),
-                                Api = 1
+                                Api = 1,
+                                MVID = t.mv.ToString()
                             };
 
                             res.Add(mi);
@@ -1555,6 +1557,7 @@ namespace MusicDownloader.Library
                 {
                     re.Add(new MusicInfo
                     {
+                        MVID = json.data.list[i].mv.vid,
                         Album = json.data.list[i].album.title,
                         Api = 2,
                         Id = json.data.list[i].mid,
@@ -1570,30 +1573,33 @@ namespace MusicDownloader.Library
             }
         }
 
-        public async Task<string> GetMvUrl(int api, string id)
+        public string GetMvUrl(int api, string id)
         {
             string url = null;
             if (api == 1)
             {
+                return "http://music.163.com/mv/?id=" + id;
+                /*
                 var queries = new Dictionary<string, object>();
                 queries["id"] = id;
                 var j = await capi.RequestAsync(CloudMusicApiProviders.MvUrl, queries);
-                //url = NeteaseApiUrl + "mv/url?id=" + id;
-                //WebClientPro wc = new WebClientPro();
-                //StreamReader sr = new StreamReader(wc.OpenRead(url));
                 string pattern = "(?<=\"url\":\").+?(?=\")";
-                return Regex.Match(j.ToString(), pattern).Value;
+                return Regex.Match(j.ToString(), pattern).Value;*/
             }
             if (api == 2)
             {
                 url = QQApiUrl + "song/mv?id=" + id;
-                WebClientPro wc = new WebClientPro();
-                StreamReader sr = new StreamReader(wc.OpenRead(url));
-                string pattern = "(?<=\"vid\":\").+?(?=\")";
-                url = QQApiUrl + "mv/url?id=" + Regex.Match(sr.ReadToEnd(), pattern).Value;
-                sr = new StreamReader(wc.OpenRead(url));
-                pattern = "(?<=http:).+?(?=\")";
-                return "http:" + Regex.Match(sr.ReadToEnd(), pattern).Value;
+                //https://y.qq.com/n/yqq/mv/v/s00367m6r4d.html
+                /*
+                    WebClientPro wc = new WebClientPro();
+                    StreamReader sr = new StreamReader(wc.OpenRead(url));
+                    string pattern = "(?<=\"vid\":\").+?(?=\")";
+                    url = QQApiUrl + "mv/url?id=" + Regex.Match(sr.ReadToEnd(), pattern).Value;
+                    sr = new StreamReader(wc.OpenRead(url));
+                    pattern = "(?<=http:).+?(?=\")";
+                    return "http:" + Regex.Match(sr.ReadToEnd(), pattern).Value;
+                */
+                return "https://y.qq.com/n/yqq/mv/v/" + id + ".html";
             }
             return "";
         }

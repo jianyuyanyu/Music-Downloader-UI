@@ -269,6 +269,7 @@ namespace MusicDownloader.Json
             public List<ar> ar { get; set; }
             public string name { get; set; }
             public long id { get; set; }
+            public long mv { get; set; }
         }
 
         public class ar
@@ -404,6 +405,12 @@ namespace MusicDownloader.Json
             public string mid { get; set; }
             public album album { get; set; }
             public file file { get; set; }
+            public mv mv { get; set; }
+        }
+
+        public class mv
+        {
+            public string vid { get; set; }
         }
 
         public class album

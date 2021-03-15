@@ -1248,7 +1248,7 @@ namespace MusicDownloader.Pages
         {
             if (m.MVID != "0" && !string.IsNullOrEmpty(m.MVID))
             {
-                Clipboard.SetText(music.GetMvUrl(m.Api, m.MVID).Result);
+                Clipboard.SetText(music.GetMvUrl(m.Api, m.MVID));
                 NoticeManager.NotifiactionShow.AddNotifiaction(new NotifiactionModel()
                 {
                     Title = "提示",
