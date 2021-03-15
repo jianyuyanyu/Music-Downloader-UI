@@ -1462,17 +1462,8 @@ namespace MusicDownloader.Library
                         queries["id"] = id;
                         var j = await capi.RequestAsync(CloudMusicApiProviders.Album, queries);
                         List<MusicInfo> res = new List<MusicInfo>();
-                        //string url = NeteaseApiUrl + "album?id=" + id;
-                        string url = j.ToString();
                         NeteaseAlbum.Root json;
-                        try
-                        {
-                            json = JsonConvert.DeserializeObject<NeteaseAlbum.Root>(GetHTML(url));
-                        }
-                        catch
-                        {
-                            return null;
-                        }
+                        json = JsonConvert.DeserializeObject<NeteaseAlbum.Root>(j.ToString());
                         foreach (var t in json.songs)
                         {
                             string singer = "";
@@ -1482,13 +1473,12 @@ namespace MusicDownloader.Library
                             }
                             queries = new Dictionary<string, object>();
                             queries["id"] = t.id.ToString();
-                            var a = await capi.RequestAsync(CloudMusicApiProviders.Lyric, queries);
                             MusicInfo mi = new MusicInfo()
                             {
                                 Title = t.name,
                                 Album = json.album.name,
                                 Id = t.id.ToString(),
-                                LrcUrl = a.ToString(),
+                                LrcUrl = null,
                                 PicUrl = t.al.picUrl + "?param=300y300",
                                 Singer = singer.Substring(0, singer.Length - 1),
                                 Api = 1
