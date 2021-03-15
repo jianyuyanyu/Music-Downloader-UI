@@ -16,8 +16,8 @@ namespace MusicDownloader.Library
 {
     public class Music
     {
-        public List<int> version = new List<int> { 1, 4, 1 };
-        public bool Beta = false;
+        public List<int> version = new List<int> { 1, 4, 2 };
+        public bool Beta = true;
         private readonly string UpdateJsonUrl = "";
         //public string api1 = "";
         public string api2 = "";
@@ -1418,44 +1418,24 @@ namespace MusicDownloader.Library
             var queries = new Dictionary<string, object>();
             queries["ids"] = ids;
             string j = (await capi.RequestAsync(CloudMusicApiProviders.SongDetail, queries)).ToString();
-            //string _u = NeteaseApiUrl + "song/detail?ids=" + ids;
-            //string j = GetHTML(_u);
             Json.NeteaseMusicDetails.Root mdr = JsonConvert.DeserializeObject<Json.NeteaseMusicDetails.Root>(j);
-            //string u = NeteaseApiUrl + "song/url?id=" + ids + "&br=" + setting.DownloadQuality;
             queries = new Dictionary<string, object>();
-            queries["id"] = ids;
-            queries["br"] = setting.DownloadQuality;
-            var _j = await capi.RequestAsync(CloudMusicApiProviders.SongUrl, queries);
-            //Json.GetUrl.Root urls = JsonConvert.DeserializeObject<Json.GetUrl.Root>(GetHTML(u));
-            Json.GetUrl.Root urls = JsonConvert.DeserializeObject<Json.GetUrl.Root>(_j.ToString());
             for (int i = 0; i < mdr.songs.Count; i++)
             {
                 string singer = "";
                 List<string> singerid = new List<string>();
-                string _url = "";
+                //string _url = "";
 
                 for (int x = 0; x < mdr.songs[i].ar.Count; x++)
                 {
                     singer += mdr.songs[i].ar[x].name + "、";
                     singerid.Add(mdr.songs[i].ar[x].id.ToString());
                 }
-
-                for (int x = 0; x < urls.data.Count; x++)
-                {
-                    if (urls.data[x].id == mdr.songs[i].id)
-                    {
-                        _url = urls.data[x].url;
-                    }
-                }
-
-                queries = new Dictionary<string, object>();
-                queries["id"] = mdr.songs[i].id.ToString();
-                var a = await capi.RequestAsync(CloudMusicApiProviders.Lyric, queries);
                 MusicInfo mi = new MusicInfo()
                 {
                     Album = mdr.songs[i].al.name,
                     Id = mdr.songs[i].id.ToString(),
-                    LrcUrl = a.ToString(),
+                    LrcUrl = null,
                     PicUrl = mdr.songs[i].al.picUrl + "?param=300y300",
                     Singer = singer.Substring(0, singer.Length - 1),
                     Title = mdr.songs[i].name,
