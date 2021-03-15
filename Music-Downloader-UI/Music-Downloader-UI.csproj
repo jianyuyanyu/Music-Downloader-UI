@@ -288,7 +288,6 @@
     </EmbeddedResource>
     <Resource Include="Fonts\iconfont.ttf" />
     <None Include="app.manifest" />
-    <None Include="Images\Visual Studio 2019.lnk" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -315,10 +314,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\alipay.png" />
-    <Resource Include="Images\wechatpay.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Background.jpg" />
