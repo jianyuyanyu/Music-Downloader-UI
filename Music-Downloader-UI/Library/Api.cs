@@ -32,6 +32,7 @@ namespace MusicDownloader.Library
         private static string re_ver = null;
         private static string re_zipurl = null;
         public static bool NodejsDownloadSuc = false;
+        public static bool Running = false;
 
         public static bool ApiStart(string ver, string zipurl)
         {
@@ -176,6 +177,7 @@ namespace MusicDownloader.Library
             while (!_isinstall)
             { }
             _isinstall = false;
+            Running = true;
         }
 
         private static void P_ErrorDataReceived(object sender, DataReceivedEventArgs e)
@@ -353,6 +355,7 @@ namespace MusicDownloader.Library
 
         public static void StopApi()
         {
+            Running = false;
             Process[] ps = Process.GetProcessesByName("node");
             foreach (Process _p in ps)
             {

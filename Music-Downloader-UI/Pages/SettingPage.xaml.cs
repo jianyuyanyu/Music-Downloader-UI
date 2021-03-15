@@ -172,12 +172,15 @@ namespace MusicDownloader.Pages
             setting.TranslateLrc = TranslateLrcComboBox.SelectedIndex;
             setting.AutoLowerQuality = lowqCheckBox.IsChecked ?? false;
             setting.EnableLoacApi = localapiCheckBox.IsChecked ?? false;
-            if ((localapiCheckBox.IsChecked ?? false) && !Api.ok)
+            if ((localapiCheckBox.IsChecked ?? false))
             {
-                Dispatcher.Invoke(new Action(() =>
+                if (!Api.Running)
                 {
-                    EnableLoacApiEvent();
-                }));
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        EnableLoacApiEvent();
+                    }));
+                }
             }
             else
             {
@@ -189,7 +192,6 @@ namespace MusicDownloader.Pages
                     music.QQApiUrl = Music.decrypt(music.api2);
                 else
                     music.QQApiUrl = Music.decrypt(setting.Api2);
-                Api.ok = false;
                 Api.StopApi();
             }
 
