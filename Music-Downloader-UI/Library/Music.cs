@@ -287,18 +287,17 @@ namespace MusicDownloader.Library
             {
                 return null;
             }
-            //Json.SearchResultJson.Root srj = JsonConvert.DeserializeObject<Json.SearchResultJson.Root>(_json.ToString());
+            Json.SearchResultJson.Root srj = JsonConvert.DeserializeObject<Json.SearchResultJson.Root>(json.ToString());
             List<Json.MusicInfo> ret = new List<Json.MusicInfo>();
             if (json["result"]["songs"] /*srj.result.songs*/ == null)
             {
                 return null;
             }
             string ids = "";
-            for (int i = 0; i < (int)json["result"]["songCount"] / 6/*srj.result.songs.Count*/; i++)
+            for (int i = 0; i < srj.result.songs.Count; i++)
             {
-                ids += /*srj.result.songs*/json["result"]["songs"][i]["id"] + ",";
+                ids += srj.result.songs[i].id + ",";
             }
-
             //string _u = NeteaseApiUrl + "song/detail?ids=" + ids.Substring(0, ids.Length - 1);
             queries = new Dictionary<string, object>();
             queries["ids"] = ids.Substring(0, ids.Length - 1);
