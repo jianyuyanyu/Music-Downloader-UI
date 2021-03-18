@@ -1187,7 +1187,7 @@ namespace MusicDownloader.Pages
 
         private void searchTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (searchTextBox.Text == "搜索(歌名/歌手/ID)")
+            if (searchTextBox.Text == "搜索(歌名/歌手)")
             {
                 searchTextBox.Text = "";
                 searchTextBox.Foreground = new SolidColorBrush(Colors.White);
@@ -1198,7 +1198,7 @@ namespace MusicDownloader.Pages
         {
             if (searchTextBox.Text == "")
             {
-                searchTextBox.Text = "搜索(歌名/歌手/ID)";
+                searchTextBox.Text = "搜索(歌名/歌手)";
                 searchTextBox.Foreground = new SolidColorBrush(Colors.LightGray);
             }
         }

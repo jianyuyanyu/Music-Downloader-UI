@@ -16,8 +16,8 @@ namespace MusicDownloader.Library
 {
     public class Music
     {
-        public List<int> version = new List<int> { 1, 4, 2 };
-        public bool Beta = false;
+        public List<int> version = new List<int> { 1, 4, 3 };
+        public bool Beta = true;
         private readonly string UpdateJsonUrl = "";
         //public string api1 = "";
         public string api2 = "";
@@ -761,11 +761,11 @@ namespace MusicDownloader.Library
                 }
                 if (!string.IsNullOrEmpty(strMediaMid))
                 {
-                    url = QQApiUrl + "song/url?id=" + id + "&type=flac&mediaId=" + strMediaMid;
+                    url = QQApiUrl + "song/url?id=" + id + "&type=320&mediaId=" + strMediaMid;
                 }
                 else
                 {
-                    url = QQApiUrl + "song/url?id=" + id + "&type=flac";
+                    url = QQApiUrl + "song/url?id=" + id + "&type=320";
                 }
                 string html = GetHTML(url, false);
                 QQmusicdetails json = null;
@@ -773,6 +773,8 @@ namespace MusicDownloader.Library
                 {
                     json = JsonConvert.DeserializeObject<QQmusicdetails>(html);
                 }
+                if (json.result != 100)
+                    return "";
                 using (WebClient wc = new WebClient())
                 {
                     HttpWebRequest wr = (HttpWebRequest)HttpWebRequest.Create(json.data);
