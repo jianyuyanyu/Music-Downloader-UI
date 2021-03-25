@@ -71,8 +71,8 @@
                 <TextBlock Margin="0 0 0 5" Grid.Row="1" VerticalAlignment="Bottom" Text="免费软件 请勿倒卖" Foreground="White" FontFamily="Microsoft Yahei UI" FontSize="12" HorizontalAlignment="Center"/>
             </Grid>
             <Grid Grid.Column="1">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="180">
-                    <Button IsEnabled="True" Name="NT" Style="{StaticResource ResourceKey=SysButton}" Content="NiTian1207" Width="65" Height="17" Margin="0 0 9 0" Click="NT_Click"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="155">
+                    <Button IsEnabled="True" Name="NT" Style="{StaticResource ResourceKey=SysButton}" Content="Nite07" Width="40" Height="17" Margin="0 0 9 0" Click="NT_Click"/>
                     <Button Name="Skin" Style="{StaticResource ResourceKey=SysButton}" Content="&#xe631;" Width="25" Height="17" Margin="0 0 9 0" Click="Skin_Click"/>
                     <TextBlock Foreground="White" VerticalAlignment="Center" Text="|" FontSize="16" Margin="0 0 8 0"/>
                     <Button Name="Minimize" Style="{StaticResource ResourceKey=SysButton}" Content="&#xE6C1;" Width="25" Height="17" Margin="1 0 1 0" Click="Minimize_Click"/>

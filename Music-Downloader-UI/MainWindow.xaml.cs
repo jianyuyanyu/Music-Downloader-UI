@@ -206,7 +206,7 @@ namespace MusicDownloader
             {
                 if (AduMessageBox.ShowYesNo("建议阅读帮助并启用本地API", "欢迎", "是", "否") == MessageBoxResult.Yes)
                 {
-                    Process.Start("https://www.nitianblog.com/?p=868");
+                    Process.Start("https://www.nite07.com/music-downloader-ui-%e4%bd%bf%e7%94%a8%e5%b8%ae%e5%8a%a9/");
                 }
                 if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/MusicDownloader/"))
                     Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/MusicDownloader/");
@@ -409,7 +409,7 @@ namespace MusicDownloader
             {
                 if (music.canJumpToBlog)
                 {
-                    Process.Start("https://www.nitianblog.com/?p=868");
+                    Process.Start("https://www.nite07.com/music-downloader-ui-%e4%bd%bf%e7%94%a8%e5%b8%ae%e5%8a%a9/");
                     Home.IsChecked = true;
                 }
                 else
@@ -438,7 +438,7 @@ namespace MusicDownloader
         {
             if (music.canJumpToBlog)
             {
-                Process.Start("https://www.nitianblog.com");
+                Process.Start("https://www.nite07.com");
             }
         }
 
