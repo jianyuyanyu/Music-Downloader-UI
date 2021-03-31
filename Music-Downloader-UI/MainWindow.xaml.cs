@@ -142,6 +142,10 @@ namespace MusicDownloader
             {
                 Blur.Radius = double.Parse(Tool.Config.Read("Blur"));
             }
+            if (string.IsNullOrEmpty(Tool.Config.Read("Close")))
+            {
+                Tool.Config.Write("Close", "0");
+            }
         }
 
         private void Api_NotifyZipEventHandle()
@@ -273,34 +277,32 @@ namespace MusicDownloader
 
         private void WindowX_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!string.IsNullOrEmpty(Tool.Config.Read("Close")))
+            switch (int.Parse(Tool.Config.Read("Close")))
             {
-                switch (int.Parse(Tool.Config.Read("Close")))
-                {
-                    case 0:
-                        MessageBoxResult result = AduMessageBox.ShowYesNo("                    确定关闭程序?", "提示", "退出", "最小化");
-                        if (result == MessageBoxResult.No)
-                        {
-                            e.Cancel = true;
-                            Visibility = Visibility.Hidden;
-                        }
-                        if (result == MessageBoxResult.Yes)
-                        {
-                            notifyicon.Dispose();
-                            Application.Current.Shutdown();
-                        }
-                        break;
-                    case 1:
+                case 0:
+                    MessageBoxResult result = AduMessageBox.ShowYesNo("                    确定关闭程序?", "提示", "退出", "最小化");
+                    if (result == MessageBoxResult.No)
+                    {
                         e.Cancel = true;
                         Visibility = Visibility.Hidden;
-                        break;
-                    case 2:
+                    }
+                    if (result == MessageBoxResult.Yes)
+                    {
                         notifyicon.Dispose();
                         Application.Current.Shutdown();
-                        break;
+                    }
+                    break;
+                case 1:
+                    e.Cancel = true;
+                    Visibility = Visibility.Hidden;
+                    break;
+                case 2:
+                    notifyicon.Dispose();
+                    Application.Current.Shutdown();
+                    break;
 
-                }
             }
+
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
