@@ -149,8 +149,6 @@ namespace MusicDownloader
             }
         }
 
-
-
         private void Api_NotifyZipEventHandle()
         {
             setting.EnableLoacApi = false;
@@ -206,7 +204,7 @@ namespace MusicDownloader
                 sw = new StreamWriter("Error.log");
                 sw.WriteLine($"--- {DateTime.Now.ToString("G")} ---");
             }
-            sw.WriteLine(e.Message.ToString() + "/r/n" + e.StackTrace);
+            sw.WriteLine(e.Message.ToString() + "\r\n" + e.StackTrace + "\r\n");
             sw.Flush();
             sw.Close();
         }

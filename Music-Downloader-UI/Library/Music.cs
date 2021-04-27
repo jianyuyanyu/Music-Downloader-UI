@@ -87,7 +87,7 @@ namespace MusicDownloader.Library
                     cookie = update.Cookie;
                     if (!string.IsNullOrEmpty(cookie))
                     {
-                        capi = new CloudMusicApi(cookie);
+                        capi = new CloudMusicApi(cookie );
                     }
                 }
             }

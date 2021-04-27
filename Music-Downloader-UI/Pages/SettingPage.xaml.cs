@@ -154,11 +154,13 @@ namespace MusicDownloader.Pages
             {
                 Tool.Config.Write("Cookie1", cookietextbox1.Text);
                 music.cookie = cookietextbox1.Text;
+                music.capi = new NeteaseCloudMusicApi.CloudMusicApi(music.cookie);
             }
             else
             {
                 Tool.Config.Write("Cookie1", "");
                 music.cookie = music._cookie;
+                music.capi = new NeteaseCloudMusicApi.CloudMusicApi(music.cookie);
             }
             setting.SavePath = savePathTextBox.Text;
             setting.DownloadQuality = ((System.Windows.Controls.ContentControl)qualityComboBox.SelectedValue).Content.ToString().Substring(("无损(").Length, "999000".Length);

@@ -109,7 +109,7 @@
                 </WrapPanel>
                 <WrapPanel>
                     <Label Foreground="White" Margin="0 10 0 0" Content="自定义音源1Cookie"/>
-                    <TextBox IsEnabled="False" Background="#20FFFFFF" BorderThickness="0" Margin="0 10 0 0" Name="cookietextbox1" Width="227" Height="25" />
+                    <TextBox Foreground="White" IsEnabled="true" Background="#20FFFFFF" BorderThickness="0" Margin="0 10 0 0" Name="cookietextbox1" Width="227" Height="25" />
                 </WrapPanel>
                 <WrapPanel>
                     <Label Foreground="White" Margin="0 10 0 0" Content="自定义音源2"/>
