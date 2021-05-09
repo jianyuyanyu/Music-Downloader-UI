@@ -1081,6 +1081,10 @@ namespace MusicDownloader.Pages
             //{
             //    apiComboBox.Foreground = new SolidColorBrush(Colors.Green);
             //}
+            if (!music.api2avail && music.updateend && apiComboBox.SelectedIndex == 1)
+            {
+                AduMessageBox.Show("音源2暂不可下载", "提示");
+            }
         }
 
         /// <summary>

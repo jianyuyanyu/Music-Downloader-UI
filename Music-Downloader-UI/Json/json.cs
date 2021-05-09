@@ -59,6 +59,7 @@ namespace MusicDownloader.Json
         public string Cookie1 { get; set; }
         public string ApiVer { get; set; }
         public string QQ { get; set; }
+        public string Lastupdatetime { get; set; }
     }
 
     public class MusicInfo

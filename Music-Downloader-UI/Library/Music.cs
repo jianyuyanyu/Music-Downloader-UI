@@ -16,7 +16,7 @@ namespace MusicDownloader.Library
 {
     public class Music
     {
-        public List<int> version = new List<int> { 1, 4, 4 };
+        public List<int> version = new List<int> { 1, 4, 5 };
         public bool Beta = false;
         private readonly string UpdateJsonUrl = "";
         //public string api1 = "";
@@ -54,6 +54,8 @@ namespace MusicDownloader.Library
         public string apiver = "";
         private bool wait = false;
         public bool pause = false;
+        public bool api2avail = false;
+        public bool updateend = false;
 
         /// <summary>
         /// 获取更新数据 这个方法是获取程序更新信息 二次开发请修改
@@ -78,6 +80,15 @@ namespace MusicDownloader.Library
             zipurl = update.Zip;
             qqcookie = update.Cookie1;
             apiver = update.ApiVer;
+            DateTime date = Convert.ToDateTime(update.Lastupdatetime);
+            DateTime now = DateTime.Now;
+            TimeSpan t = now - date;
+            Console.WriteLine("相差时间"+t.TotalDays);
+            updateend = true;
+            if (t.TotalDays < 1)
+            {
+                api2avail = true;
+            }
             Api.qq = update.QQ;
             if (update.Cookie != null)
             {

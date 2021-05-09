@@ -123,7 +123,7 @@
                 <CheckBox Foreground="White" BorderThickness="0" pu:CheckBoxHelper.CheckBoxStyle="Standard" Name="lowqCheckBox" Margin="0 5 0 0" Content="下载错误时自动降低音质" IsChecked="True" HorizontalAlignment="Center" VerticalAlignment="Top"/>
                 <CheckBox Foreground="White" BorderThickness="0" pu:CheckBoxHelper.CheckBoxStyle="Standard" Name="localapiCheckBox" Margin="0 5 0 0" Content="启用本地API（启用前先安装node.js）" IsChecked="False" HorizontalAlignment="Center" VerticalAlignment="Top"/>
                 <Label Foreground="LightGray" HorizontalContentAlignment="Center"  Margin="0 -2 0 0" Width="380" Height="auto" Content="当无法下载音乐时请打开此模式以解决远程接口异常问题"/>
-                <Label Foreground="LightGray" HorizontalContentAlignment="Center" Margin="0 -12 0 0" Width="380" Height="auto" Content="勾选保存后自动开始部署本地接口"/>
+                <Label Foreground="LightGray" HorizontalContentAlignment="Center" Margin="0 -12 0 0" Width="380" Height="auto" Content="勾选保存后自动开始部署本地接口，占用系统资源较多"/>
                 <Button Background="#30FFFFFF" Click="DownloadNodejsButton_Click" Name="DownloadNodejsButton" Content="安装Node.js(安装完后重启系统)" FontSize="13" HorizontalAlignment="Center" Height="25" Margin="0,5,0,5" VerticalAlignment="Center" Width="250"/>
                 <Button Background="#30FFFFFF" Click="FixNodejsButton_OnClick" Name="FixNodejsButton" Content="尝试修复本地API部署错误" FontSize="13" HorizontalAlignment="Center" Height="25" Margin="0,5,0,5" VerticalAlignment="Center" Width="250"/>
                 <Button Background="#30FFFFFF" Click="OpenApiPathButton_Click" Name="OpenApiPathButton" Content="打开本地API文件夹" FontSize="13" HorizontalAlignment="Center" Height="25" Margin="0,5,0,5" VerticalAlignment="Center" Width="250"/>
