@@ -16,8 +16,8 @@ namespace MusicDownloader.Library
 {
     public class Music
     {
-        public List<int> version = new List<int> { 1, 4, 5 };
-        public bool Beta = false;
+        public List<int> version = new List<int> { 1, 4, 6 };
+        public bool Beta = true;
         private readonly string UpdateJsonUrl = "";
         //public string api1 = "";
         public string api2 = "";
@@ -40,7 +40,8 @@ namespace MusicDownloader.Library
         public string _cookie = "";
         #endregion
 
-        public CloudMusicApi capi;
+        public CloudMusicApi capi = new CloudMusicApi();
+        public CloudMusicApi Downloadcapi;
 
         public Setting setting;
         public List<DownloadList> downloadlist = new List<DownloadList>();
@@ -83,7 +84,7 @@ namespace MusicDownloader.Library
             DateTime date = Convert.ToDateTime(update.Lastupdatetime);
             DateTime now = DateTime.Now;
             TimeSpan t = now - date;
-            Console.WriteLine("相差时间"+t.TotalDays);
+            Console.WriteLine("相差时间" + t.TotalDays);
             updateend = true;
             if (t.TotalDays < 1)
             {
@@ -98,7 +99,8 @@ namespace MusicDownloader.Library
                     cookie = update.Cookie;
                     if (!string.IsNullOrEmpty(cookie))
                     {
-                        capi = new CloudMusicApi(cookie );
+                        //capi = new CloudMusicApi(cookie);
+                        Downloadcapi = new CloudMusicApi(cookie);
                     }
                 }
             }
@@ -180,7 +182,8 @@ namespace MusicDownloader.Library
             }
             if (!string.IsNullOrEmpty(cookie))
             {
-                capi = new CloudMusicApi(cookie);
+                //capi = new CloudMusicApi(cookie);
+                Downloadcapi = new CloudMusicApi();
             }
         }
 
@@ -439,7 +442,7 @@ namespace MusicDownloader.Library
                 queries["id"] = downloadlist[0].Id;
                 queries["br"] = downloadlist[0].Quality;
 
-                var u = await capi.RequestAsync(CloudMusicApiProviders.SongUrl, queries);
+                var u = await Downloadcapi.RequestAsync(CloudMusicApiProviders.SongUrl, queries);
                 //string u = NeteaseApiUrl + "song/url?id=" + downloadlist[0].Id + "&br=" + downloadlist[0].Quality;
                 //??接口本身就会降音质
                 //Json.GetUrl.Root urls = JsonConvert.DeserializeObject<Json.GetUrl.Root>(GetHTML(u));
