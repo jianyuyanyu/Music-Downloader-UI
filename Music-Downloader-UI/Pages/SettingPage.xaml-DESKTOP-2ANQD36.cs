@@ -291,9 +291,12 @@ namespace MusicDownloader.Pages
             Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MusicDownloader\\");
         }
 
-        private void Image_MouseDown(object sender, MouseButtonEventArgs e)
+        private void localapiCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://www.bkcloud.ml/");
+            if(AduMessageBox.Show("是否已安装Node.js?", "提示:", MessageBoxButton.YesNo)==MessageBoxResult.No)
+            {
+                localapiCheckBox.IsChecked = false;
+            }
         }
     }
 }

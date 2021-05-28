@@ -115,6 +115,10 @@ namespace MusicDownloader.Library
 
         private static void Wc_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
+            if (Directory.Exists(path + "QQMusicApi-master"))
+            {
+                Directory.Delete(path + "QQMusicApi-master", true);
+            }
             ZipFile.ExtractToDirectory(path + "api.zip", path);
             File.Delete(path + "api.zip");
             //while (PortInUse(port1))
@@ -184,7 +188,7 @@ namespace MusicDownloader.Library
         {
             Console.WriteLine(e.Data);
             //不是内部或外部命令
-            if (e.Data.Replace("\r","").Replace("\n","").IndexOf("不是内部或外部命令") != -1)
+            if (e.Data.Replace("\r", "").Replace("\n", "").IndexOf("不是内部或外部命令") != -1)
             {
                 NotifyNpmEventHandle();
                 nonodejs = true;
@@ -235,10 +239,10 @@ namespace MusicDownloader.Library
                 //}
                 //else
                 //{
-                    StreamWriter sw = new StreamWriter(path + "INSTALL2.txt");
-                    sw.WriteLine("true");
-                    sw.Flush();
-                    sw.Close();
+                StreamWriter sw = new StreamWriter(path + "INSTALL2.txt");
+                sw.WriteLine("true");
+                sw.Flush();
+                sw.Close();
                 //}
             }
             if (e.Data.IndexOf("http://127.0.0.1:" + _port) != -1 || e.Data.IndexOf("http://localhost:" + _port) != -1)

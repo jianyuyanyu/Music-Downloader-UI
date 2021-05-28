@@ -16,8 +16,8 @@ namespace MusicDownloader.Library
 {
     public class Music
     {
-        public List<int> version = new List<int> { 1, 4, 6 };
-        public bool Beta = true;
+        public List<int> version = new List<int> { 1, 4, 7 };
+        public bool Beta = false;
         private readonly string UpdateJsonUrl = "";
         //public string api1 = "";
         public string api2 = "";
