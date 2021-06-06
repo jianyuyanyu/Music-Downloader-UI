@@ -43,6 +43,7 @@
                     <MenuItem x:Name="menu_label_Album" Header="复制专辑" Click="menu_Label_Album_Click"/>
                     <MenuItem x:Name="menu_label_Album3" Header="打开专辑" Click="menu_Label_Album3_Click"/>
                     <MenuItem x:Name="menu_label_Album2" Header="打开专辑网页" Click="menu_Label_Album2_Click"/>
+                    <MenuItem x:Name="menu_label_Url" Header="复制下载链接" Click="menu_label_Url_Click"/>
                 </ContextMenu>
             </DockPanel.ContextMenu>
 
@@ -146,6 +147,7 @@
                     <MenuItem x:Name="menu_Album" Header="复制专辑(单选)" Click="menu_Album_Click"/>
                     <MenuItem x:Name="menu_Album3" Header="打开专辑(单选)" Click="menu_Album3_Click"/>
                     <MenuItem x:Name="menu_Album2" Header="打开专辑网页(单选)" Click="menu_Album2_Click"/>
+                    <MenuItem x:Name="menu_Copy" Header="复制下载链接" Click="menu_label_Url_Click"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.RowStyle>

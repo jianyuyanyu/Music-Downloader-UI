@@ -417,7 +417,7 @@ namespace MusicDownloader
             {
                 if (music.canJumpToBlog)
                 {
-                    Process.Start("https://www.nite07.com/music-downloader-ui-%e4%bd%bf%e7%94%a8%e5%b8%ae%e5%8a%a9/");
+                    Process.Start("https://www.nite07.com/MusicDownloaderUIHelp/");
                     Home.IsChecked = true;
                 }
                 else
@@ -512,16 +512,17 @@ namespace MusicDownloader
                     {
                         if (!r)
                         {
-                            AduMessageBox.Show("服务启动错误", "提示");
+                            AduMessageBox.Show("服务启动错误(调用错误)", "提示");
                         }
                     }));
 
                     while (!Api.ok)
                     { }
                 });
+                System.Threading.Thread.Sleep(1000);
                 if (!Api.SetCookie(music.qqcookie))
                 {
-                    AduMessageBox.Show("服务启动错误", "提示");
+                    AduMessageBox.Show("服务启动错误(Cookie设置错误)", "提示");
                     Api.StopApi();
                     Environment.Exit(0);
                 }

@@ -292,7 +292,7 @@ namespace MusicDownloader.Pages
         /// <param name="e"></param>
         private void menu_DownloadSelectLrc_Click(object sender, RoutedEventArgs e)
         {
-            Download(true);
+            Download(false, true, false);
         }
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace MusicDownloader.Pages
         /// <param name="e"></param>
         private void menu_DownloadSelectPic_Click(object sender, RoutedEventArgs e)
         {
-            Download(false, true);
+            Download(false, false, true);
         }
 
         /// <summary>
@@ -458,7 +458,7 @@ namespace MusicDownloader.Pages
         /// <param name="e"></param>
         private void menu_DownloadSelect_Click(object sender, RoutedEventArgs e)
         {
-            Download();
+            Download(true, setting.IfDownloadLrc, setting.IfDownloadPic);
         }
 
         /// <summary>
@@ -875,67 +875,28 @@ namespace MusicDownloader.Pages
         /// </summary>
         /// <param name="ifonlydownloadlrc"></param>
         /// <param name="ifonlydownloadpic"></param>
-        private async void Download(bool ifonlydownloadlrc = false, bool ifonlydownloadpic = false)
+        private async void Download(bool ifDownloadMusic, bool ifdownloadlrc, bool ifdownloadpic)
         {
             List<DownloadList> dl = new List<DownloadList>();
             for (int i = 0; i < SearchListItem.Count; i++)
             {
                 if (SearchListItem[i].IsSelected)
                 {
-                    if (ifonlydownloadlrc)
+                    dl.Add(new DownloadList
                     {
-                        dl.Add(new DownloadList
-                        {
-                            Id = musicinfo[i].Id.ToString(),
-                            IfDownloadLrc = true,
-                            IfDownloadMusic = false,
-                            IfDownloadPic = false,
-                            Album = musicinfo[i].Album,
-                            LrcUrl = musicinfo[i].LrcUrl,
-                            PicUrl = musicinfo[i].PicUrl,
-                            Quality = setting.DownloadQuality,
-                            Singer = musicinfo[i].Singer,
-                            Title = musicinfo[i].Title,
-                            Api = musicinfo[i].Api,
-                            strMediaMid = musicinfo[i].strMediaMid
-                        });
-                    }
-                    else if (ifonlydownloadpic)
-                    {
-                        dl.Add(new DownloadList
-                        {
-                            Id = musicinfo[i].Id,
-                            IfDownloadLrc = false,
-                            IfDownloadMusic = false,
-                            IfDownloadPic = true,
-                            Album = musicinfo[i].Album,
-                            LrcUrl = musicinfo[i].LrcUrl,
-                            PicUrl = musicinfo[i].PicUrl,
-                            Quality = setting.DownloadQuality,
-                            Singer = musicinfo[i].Singer,
-                            Title = musicinfo[i].Title,
-                            Api = musicinfo[i].Api,
-                            strMediaMid = musicinfo[i].strMediaMid
-                        });
-                    }
-                    else
-                    {
-                        dl.Add(new DownloadList
-                        {
-                            Id = musicinfo[i].Id,
-                            IfDownloadLrc = setting.IfDownloadLrc,
-                            IfDownloadMusic = true,
-                            IfDownloadPic = setting.IfDownloadPic,
-                            Album = musicinfo[i].Album,
-                            LrcUrl = musicinfo[i].LrcUrl,
-                            PicUrl = musicinfo[i].PicUrl,
-                            Quality = setting.DownloadQuality,
-                            Singer = musicinfo[i].Singer,
-                            Title = musicinfo[i].Title,
-                            Api = musicinfo[i].Api,
-                            strMediaMid = musicinfo[i].strMediaMid
-                        });
-                    }
+                        Id = musicinfo[i].Id.ToString(),
+                        IfDownloadLrc = ifdownloadlrc,
+                        IfDownloadMusic = ifDownloadMusic,
+                        IfDownloadPic = ifdownloadpic,
+                        Album = musicinfo[i].Album,
+                        LrcUrl = musicinfo[i].LrcUrl,
+                        PicUrl = musicinfo[i].PicUrl,
+                        Quality = setting.DownloadQuality,
+                        Singer = musicinfo[i].Singer,
+                        Title = musicinfo[i].Title,
+                        Api = musicinfo[i].Api,
+                        strMediaMid = musicinfo[i].strMediaMid
+                    });
                 }
             }
             if (dl.Count != 0)
@@ -1101,7 +1062,7 @@ namespace MusicDownloader.Pages
             }
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key.ToString() == "X")
             {
-                Download();
+                Download(true, setting.IfDownloadLrc, setting.IfDownloadPic);
             }
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key.ToString() == "A")
             {
@@ -1481,6 +1442,30 @@ namespace MusicDownloader.Pages
                 counter_checked_item = count;
             }
             UpdateUI_LoadingState("选中(" + counter_checked_item + "/" + SearchListItem.Count + ")");
+        }
+
+        private async void menu_label_Url_Click(object sender, RoutedEventArgs e)
+        {
+            var pb = PendingBox.Show("获取中...", null, false, Application.Current.MainWindow, new PendingBoxConfigurations()
+            {
+                MinHeight = 110,
+                MaxHeight = 110,
+                MinWidth = 280,
+                MaxWidth = 280
+            });
+            Dispatcher.Invoke(new Action(async () =>
+            {
+                string url = "";
+                for (int i = 0; i < SearchListItem.Count; i++)
+                {
+                    if (SearchListItem[i].IsSelected)
+                    {
+                        url += await music.GetMusicUrlBySettingAsync(musicinfo[i].Api, musicinfo[i].Id, musicinfo[i].strMediaMid) + "\r\n";
+                    }
+                }
+                Clipboard.SetText(url);
+                pb.Close();
+            }));
         }
     }
 }

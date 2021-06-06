@@ -280,13 +280,16 @@ namespace MusicDownloader.Library
             string responseResult = string.Empty;//储存结果
             try
             {
+                Console.WriteLine("实例化");
                 HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create("http://127.0.0.1:" + port2.ToString() + "/user/setCookie");//实例化
                 req.Method = "POST";
                 req.ContentType = "application/json";
                 req.ContentLength = myByte.Length;
+                Console.WriteLine("写入请求");
                 req.GetRequestStream().Write(myByte, 0, myByte.Length);//写入请求
-                HttpWebResponse myRespond = null;
 
+                HttpWebResponse myRespond = null;
+                Console.WriteLine("接收结果");
                 myRespond = (HttpWebResponse)req.GetResponse();//接收结果
 
                 if (myRespond != null && myRespond.StatusCode == HttpStatusCode.OK)
@@ -303,11 +306,17 @@ namespace MusicDownloader.Library
                 }
                 else
                 {
+                    Console.WriteLine("操作错误");
                     return false;
                 }
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine("Message");
+                Console.WriteLine(e.Message);
+                Console.WriteLine("StackTrace");
+                Console.WriteLine(e.StackTrace);
+                Console.WriteLine("捕获异常");
                 return false;
             }
         }

@@ -806,6 +806,122 @@ namespace MusicDownloader.Library
             }
             return "";
         }
+        public async Task<string> GetMusicUrlBySettingAsync(int api, string id, string strMediaMid = "")
+        {
+            String Url = "";
+            if (api == 1)
+            {
+                var queries = new Dictionary<string, object>();
+                queries["id"] = id;
+                queries["br"] = setting.DownloadQuality;
+
+                var u = await Downloadcapi.RequestAsync(CloudMusicApiProviders.SongUrl, queries);
+                //string u = NeteaseApiUrl + "song/url?id=" + downloadlist[0].Id + "&br=" + downloadlist[0].Quality;
+                //??接口本身就会降音质
+                //Json.GetUrl.Root urls = JsonConvert.DeserializeObject<Json.GetUrl.Root>(GetHTML(u));
+                Json.GetUrl.Root urls = JsonConvert.DeserializeObject<Json.GetUrl.Root>(u.ToString());
+                //检测音质是否正确
+                if (setting.DownloadQuality == "999000")
+                {
+                    if (urls.data[0].br == 320000 || urls.data[0].br == 128000)
+                    {
+                        //音质降低
+                        if (setting.AutoLowerQuality)
+                        {
+                            Url = urls.data[0].url;
+                        }
+                        else
+                        {
+                            Url = null;
+                        }
+                    }
+                    else
+                    {
+                        Url = urls.data[0].url;
+                    }
+                }
+                else
+                {
+                    if (setting.DownloadQuality == urls.data[0].br.ToString())
+                    {
+                        //音质没降
+                        Url = urls.data[0].url;
+                    }
+                    else
+                    {
+                        //音质降低
+                        if (setting.AutoLowerQuality)
+                        {
+                            Url = urls.data[0].url;
+                        }
+                        else
+                        {
+                            Url = null;
+                        }
+                    }
+                }
+            }
+            if (api == 2)
+            {
+                await Task.Run(() =>
+                {
+                    string url = "";
+                    if (id == "0")
+                    {
+                        Url = "";
+                    }
+                    if (!string.IsNullOrEmpty(strMediaMid))
+                    {
+                        url = QQApiUrl + "song/url?id=" + id + "&type=" + setting.DownloadQuality.Replace("128000", "128").Replace("320000", "320").Replace("999000", "flac") + "&mediaId=" + strMediaMid;
+                    }
+                    else
+                    {
+                        url = QQApiUrl + "song/url?id=" + id + "&type=" + setting.DownloadQuality.Replace("128000", "128").Replace("320000", "320").Replace("999000", "flac");
+                    }
+                    using (WebClientPro wc = new WebClientPro())
+                    {
+                        StreamReader sr = null; ;
+                        try { sr = new StreamReader(wc.OpenRead(url)); }
+                        catch (Exception e)
+                        {
+                            //return e.Message;
+                        }
+
+                        string httpjson = sr.ReadToEnd();
+                        QQmusicdetails json = JsonConvert.DeserializeObject<QQmusicdetails>(httpjson);
+
+                        //降音质
+                        if (json.result != 100 && setting.AutoLowerQuality)
+                        {
+                            if (setting.DownloadQuality == "999000")
+                            {
+                                url = url.Replace("flac", "320");
+                                try { sr = new StreamReader(wc.OpenRead(url)); } catch { }
+                                httpjson = sr.ReadToEnd();
+                                json = JsonConvert.DeserializeObject<QQmusicdetails>(httpjson);
+                                if (json.result != 100)
+                                {
+                                    url = url.Replace("320", "128");
+                                    try { sr = new StreamReader(wc.OpenRead(url)); } catch { }
+                                    httpjson = sr.ReadToEnd();
+                                    json = JsonConvert.DeserializeObject<QQmusicdetails>(httpjson);
+                                }
+                            }
+                            if (setting.DownloadQuality == "320000")
+                            {
+                                url = url.Replace("320", "128");
+                                try { sr = new StreamReader(wc.OpenRead(url)); } catch { }
+                                httpjson = sr.ReadToEnd();
+                                json = JsonConvert.DeserializeObject<QQmusicdetails>(httpjson);
+                            }
+                        }
+                        Url = json.data;
+                    }
+
+                });
+            }
+            return Url;
+        }
 
         /// <summary>
         /// 文件名检查
@@ -907,7 +1023,6 @@ namespace MusicDownloader.Library
                 {
                     Directory.CreateDirectory(savepath);
                 }
-
                 if (downloadlist[0].IfDownloadMusic)
                 {
                     if (System.IO.File.Exists(savepath + "\\" + filename))
