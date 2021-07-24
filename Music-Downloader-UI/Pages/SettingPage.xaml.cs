@@ -132,6 +132,17 @@ namespace MusicDownloader.Pages
             {
                 Tool.Config.Write("HTTPProxyIP", httpProxyIP.Text);
                 Tool.Config.Write("HTTPProxyPort", httpProxyPort.Text);
+                setting.ProxyIP = httpProxyIP.Text;
+                setting.ProxyPort = httpProxyPort.Text;
+                music.SetProxy();
+            }
+            else
+            {
+                Tool.Config.Write("HTTPProxyIP", "");
+                Tool.Config.Write("HTTPProxyPort", "");
+                setting.ProxyIP = "";
+                setting.ProxyPort = "";
+                music.SetProxy();
             }
             if (Source1textBox.Text != "" && Source1textBox.Text != null && Source1textBox.Text != "http://example:port/")
             {

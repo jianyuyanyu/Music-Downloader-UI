@@ -202,6 +202,11 @@ namespace MusicDownloader.Library
                 }
                 catch { }
             }
+            else
+            {
+                capi.Proxy = null;
+                Downloadcapi.Proxy = null;
+            }
         }
 
         /// <summary>
