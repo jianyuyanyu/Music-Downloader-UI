@@ -8,6 +8,8 @@ namespace MusicDownloader.Json
 {
     public class Setting
     {
+        public string ProxyIP { get; set; }
+        public string ProxyPort { get; set; }
         public string SavePath { get; set; }
         public string DownloadQuality { get; set; }
         public bool IfDownloadLrc { get; set; }

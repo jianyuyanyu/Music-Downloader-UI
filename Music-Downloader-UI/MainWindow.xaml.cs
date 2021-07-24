@@ -112,8 +112,11 @@ namespace MusicDownloader
                 Api2 = Tool.Config.Read("Source2") ?? "",
                 Cookie1 = Tool.Config.Read("Cookie1") ?? "",
                 AutoLowerQuality = bool.Parse(Tool.Config.Read("AutoLowerQuality") ?? "true"),
-                EnableLoacApi = bool.Parse(Tool.Config.Read("EnableLoacApi") ?? "false")
+                EnableLoacApi = bool.Parse(Tool.Config.Read("EnableLoacApi") ?? "false"),
+                ProxyIP = Tool.Config.Read("HTTPProxyIP") ?? "",
+                ProxyPort = Tool.Config.Read("HTTPProxyPort") ?? ""
             };
+            
             music = new Music(setting);
             HomePage = new SearchPage(music, setting);
             DownloadPage = new DownloadPage(music);

@@ -107,7 +107,7 @@ namespace MusicDownloader
             {
                 for (int i = 0; i < listitem.Count; i++)
                 {
-                    if (listitem[i].State == "下载完成" || listitem[i].State == "无版权" || listitem[i].State == "下载错误" || listitem[i].State == "音乐已存在")
+                    if (listitem[i].State == "下载完成" || listitem[i].State == "无版权" || listitem[i].State == "下载错误" || listitem[i].State == "音乐已存在" || listitem[i].State == "路径过长")
                     {
                         listitem.RemoveAt(i);
                     }
@@ -185,8 +185,8 @@ namespace MusicDownloader
 
             try
             {
-                StringBuilder log= new StringBuilder();
-                int log_counter =0;
+                StringBuilder log = new StringBuilder();
+                int log_counter = 0;
                 for (int i = 0; i < listitem.Count; i++)
                 {
                     if (listitem[i].State == "下载完成" || listitem[i].State == "音乐已存在")
@@ -199,9 +199,9 @@ namespace MusicDownloader
                     string album = listitem[i].Album;
 
                     if (title.IndexOf(',') > -1)
-                       log.Append("\"" + title + "\",");
+                        log.Append("\"" + title + "\",");
                     else
-                       log.Append(title + ",");
+                        log.Append(title + ",");
 
                     if (singer.IndexOf(',') > -1)
                         log.Append("\"" + singer + "\",");

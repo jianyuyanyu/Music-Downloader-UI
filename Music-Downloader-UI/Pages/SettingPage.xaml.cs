@@ -56,6 +56,8 @@ namespace MusicDownloader.Pages
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            httpProxyIP.Text = setting.ProxyIP;
+            httpProxyPort.Text = setting.ProxyPort;
             savePathTextBox.Text = setting.SavePath;
             searchQuantityTextBox.Text = setting.SearchQuantity;
             searchresultfiltertextbox.Text = setting.SearchResultFilter;
@@ -126,6 +128,11 @@ namespace MusicDownloader.Pages
             Tool.Config.Write("TranslateLrc", TranslateLrcComboBox.SelectedIndex.ToString());
             Tool.Config.Write("Close", CloseComboBox.SelectedIndex.ToString());
             Tool.Config.Write("EnableLoacApi", localapiCheckBox.IsChecked.ToString());
+            if (!string.IsNullOrEmpty(httpProxyIP.Text) && !string.IsNullOrEmpty(httpProxyPort.Text))
+            {
+                Tool.Config.Write("HTTPProxyIP", httpProxyIP.Text);
+                Tool.Config.Write("HTTPProxyPort", httpProxyPort.Text);
+            }
             if (Source1textBox.Text != "" && Source1textBox.Text != null && Source1textBox.Text != "http://example:port/")
             {
                 Tool.Config.Write("Source1", Source1textBox.Text);

@@ -21,6 +21,14 @@
             <StackPanel ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
                 <Image Source="/Images/bk.png" Height="134" Width="527" MouseDown="Image_MouseDown" Cursor="Hand" Stretch="Fill"></Image>
                 <WrapPanel Margin="0 10 0 0" HorizontalAlignment="Center">
+                    <Label Foreground="White" Content="HTTP代理IP" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="90"/>
+                    <TextBox Name="httpProxyIP" Foreground="White" Background="#20FFFFFF" BorderThickness="0" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="250" RenderTransformOrigin="0.438,0.4"/>
+                </WrapPanel>
+                <WrapPanel Margin="0 10 0 0" HorizontalAlignment="Center">
+                    <Label Foreground="White" Content="HTTP代理端口" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="90"/>
+                    <TextBox Name="httpProxyPort" Foreground="White" Background="#20FFFFFF" BorderThickness="0" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="250" RenderTransformOrigin="0.438,0.4"/>
+                </WrapPanel>
+                <WrapPanel Margin="0 10 0 0" HorizontalAlignment="Center">
                     <Label Foreground="White" Content="保存路径" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="60"/>
                     <TextBox Foreground="White" Background="#20FFFFFF" BorderThickness="0" Name="savePathTextBox" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="250" RenderTransformOrigin="0.438,0.4"/>
                     <Button Background="#30FFFFFF" Click="browseButton_Click" Name="browseButton" Content="浏览" FontSize="13" HorizontalAlignment="Left" Height="25" Margin="10,2,0,0" VerticalAlignment="Top" Width="50"/>
