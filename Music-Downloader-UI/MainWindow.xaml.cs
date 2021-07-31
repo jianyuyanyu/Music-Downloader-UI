@@ -281,7 +281,7 @@ namespace MusicDownloader
             notifyicon.Dispose();
             NoticeManager.ExitNotifiaction();
             Api.StopApi();
-            Application.Current.Shutdown();
+            Environment.Exit(0);
         }
 
         private void WindowX_Closing(object sender, System.ComponentModel.CancelEventArgs e)

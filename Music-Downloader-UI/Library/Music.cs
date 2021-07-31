@@ -30,7 +30,8 @@ namespace MusicDownloader.Library
             "Zip": "",本地api下载链接
             "Cookie1": "",音源2cookie
             "ApiVer": "",本地api版本号
-            "QQ": ""
+            "QQ": "",
+            "Lastupdatetime": ""
             }
         */
         #region 
