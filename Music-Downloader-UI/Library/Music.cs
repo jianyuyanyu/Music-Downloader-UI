@@ -16,7 +16,7 @@ namespace MusicDownloader.Library
 {
     public class Music
     {
-        public List<int> version = new List<int> { 1, 4, 9 };
+        public List<int> version = new List<int> { 1, 5, 0 };
         public bool Beta = false;
         private readonly string UpdateJsonUrl = "";
         //public string api1 = "";
@@ -599,6 +599,7 @@ namespace MusicDownloader.Library
                     HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
                     req.Method = "HEAD";
                     req.AllowAutoRedirect = false;
+                    req.Timeout = 10000;
                     HttpWebResponse myResp = (HttpWebResponse)req.GetResponse();
                     if (myResp.StatusCode == HttpStatusCode.Redirect)
                     { url = myResp.GetResponseHeader("Location"); }
@@ -635,6 +636,7 @@ namespace MusicDownloader.Library
                 using (WebClient wc = new WebClient())
                 {
                     HttpWebRequest wr = (HttpWebRequest)HttpWebRequest.Create(json.data);
+                    wr.Timeout = 10000;
                     try { HttpWebResponse r = (HttpWebResponse)wr.GetResponse(); } catch { json.data = null; }
                 }
                 if (json.data == null)

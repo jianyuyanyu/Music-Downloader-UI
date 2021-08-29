@@ -137,7 +137,9 @@ namespace MusicDownloader.Pages
                 load_music(musicinfo[List.SelectedIndex].Api, musicinfo[List.SelectedIndex].Id, musicinfo[List.SelectedIndex].Title + " - " + musicinfo[List.SelectedIndex].Singer, List.SelectedIndex);
                 return;
             }
-            catch { }
+            catch
+            {
+            }
 
         }
 
@@ -174,8 +176,12 @@ namespace MusicDownloader.Pages
                     string url = music.GetMusicUrl(api, id);
                     if (string.IsNullOrEmpty(url))
                     {
-                        UpdateUI_LoadingState("解析失败 " + text);
-                        return;
+                        url = music.GetMusicUrl(api, id);
+                        if (string.IsNullOrEmpty(url))
+                        {
+                            UpdateUI_LoadingState("解析失败 " + text);
+                            return;
+                        }
                     }
                     UpdateUI_LoadingState("缓冲 " + text);
 

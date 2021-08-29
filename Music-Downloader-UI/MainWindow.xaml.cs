@@ -95,6 +95,7 @@ namespace MusicDownloader
             MusicDownloader.Pages.SettingPage.EnableLoacApiEvent += EnableLoaclApi;
             Api.NotifyNpmEventHandle += NpmNotExist;
             Api.NotifyZipEventHandle += Api_NotifyZipEventHandle;
+            Api.NeedRestartEventHandle += Restart;
             Application.Current.DispatcherUnhandledException += new System.Windows.Threading.DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
             setting = new Setting()
             {
@@ -116,7 +117,7 @@ namespace MusicDownloader
                 ProxyIP = Tool.Config.Read("HTTPProxyIP") ?? "",
                 ProxyPort = Tool.Config.Read("HTTPProxyPort") ?? ""
             };
-            
+
             music = new Music(setting);
             HomePage = new SearchPage(music, setting);
             DownloadPage = new DownloadPage(music);
@@ -158,6 +159,15 @@ namespace MusicDownloader
             Dispatcher.Invoke(new Action(() =>
             {
                 AduMessageBox.Show("本地API文件下载失败", "提示");
+            }));
+        }
+
+        private void Restart()
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                AduMessageBox.Show("需要重启应用，应用即将退出");
+                Environment.Exit(0);
             }));
         }
 
@@ -219,7 +229,7 @@ namespace MusicDownloader
             {
                 if (AduMessageBox.ShowYesNo("建议阅读帮助并启用本地API", "欢迎", "是", "否") == MessageBoxResult.Yes)
                 {
-                    Process.Start("https://www.nite07.com/music-downloader-ui-%e4%bd%bf%e7%94%a8%e5%b8%ae%e5%8a%a9/");
+                    Process.Start("https://www.nite07.com/musicdownloaderuihelp");
                 }
                 if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/MusicDownloader/"))
                     Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/MusicDownloader/");

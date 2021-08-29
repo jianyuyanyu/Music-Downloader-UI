@@ -8,6 +8,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows;
 using Panuon.UI.Silver;
+using System.Threading;
 
 namespace MusicDownloader.Library
 {
@@ -15,6 +16,7 @@ namespace MusicDownloader.Library
     {
         //public static string ApiFilePath1 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MusicDownloader\\" + "NeteaseCloudMusicApi";
         public static string ApiFilePath2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MusicDownloader\\" + "QQMusicApi";
+        //public static string ApiFilePath2 = "\\MusicApi";
         //private static Process p1 = new Process();
         private static Process p2 = new Process();
         private static string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MusicDownloader\\";
@@ -31,8 +33,9 @@ namespace MusicDownloader.Library
         public static event NotifyZipNotExist NotifyZipEventHandle;
         private static string re_ver = null;
         private static string re_zipurl = null;
-        public static bool NodejsDownloadSuc = false;
         public static bool Running = false;
+        public delegate void NeedRestart();
+        public static event NotifyZipNotExist NeedRestartEventHandle;
 
         public static bool ApiStart(string ver, string zipurl)
         {
@@ -42,7 +45,7 @@ namespace MusicDownloader.Library
             {
                 Directory.CreateDirectory(path);
             }
-
+            DownloadNodejs();
             if (File.Exists(path + "Api.txt"))
             {
                 StreamReader sr = new StreamReader(path + "Api.txt");
@@ -388,33 +391,45 @@ namespace MusicDownloader.Library
                 case "10.0":
                     if (Environment.Is64BitOperatingSystem)
                     {
-                        NodejsUrl = "https://npm.taobao.org/mirrors/node/v14.15.4/node-v14.15.4-x64.msi";
+                        NodejsUrl = "https://npm.taobao.org/mirrors/node/v14.17.5/node-v14.17.5-win-x64.zip";
                     }
                     else
                     {
-                        NodejsUrl = "https://npm.taobao.org/mirrors/node/v14.15.4/node-v14.15.4-x86.msi";
+                        NodejsUrl = "https://npm.taobao.org/mirrors/node/v14.17.5/node-v14.17.5-win-x86.zip";
                     }
                     break;
                 case "6.1":
                     if (Environment.Is64BitOperatingSystem)
                     {
-                        NodejsUrl = "https://npm.taobao.org/mirrors/node/latest-v12.x/node-v12.9.1-x64.msi";
+                        NodejsUrl = "https://npm.taobao.org/mirrors/node/v12.9.1/node-v12.9.1-win-x64.zip";
                     }
                     else
                     {
-                        NodejsUrl = "https://npm.taobao.org/mirrors/node/latest-v12.x/node-v12.9.1-x86.msi";
+                        NodejsUrl = "https://npm.taobao.org/mirrors/node/v12.9.1/node-v12.9.1-win-x86.zip";
                     }
                     break;
             }
-            WebClient wc = new WebClient();
-            wc.DownloadFileCompleted += Wc_DownloadFileCompleted_Nodejs;
-            wc.DownloadFileAsync(new Uri(NodejsUrl), path + Path.GetFileName(NodejsUrl));
+            if (!Directory.Exists(path + Path.GetFileNameWithoutExtension(NodejsUrl)))
+            {
+                WebClient wc = new WebClient();
+                wc.DownloadFileCompleted += Wc_DownloadFileCompleted_Nodejs;
+                wc.DownloadFileAsync(new Uri(NodejsUrl), path + Path.GetFileName(NodejsUrl));
+                while (true) { }
+            }
         }
 
         private static void Wc_DownloadFileCompleted_Nodejs(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
-            NodejsDownloadSuc = true;
-            Process.Start(path + Path.GetFileName(NodejsUrl));
+            Console.WriteLine("开始解压");
+            Console.WriteLine(path + Path.GetFileName(NodejsUrl));
+            ZipFile.ExtractToDirectory(path + Path.GetFileName(NodejsUrl), path);
+            string s = Environment.GetEnvironmentVariable("path", EnvironmentVariableTarget.Machine);
+            Console.WriteLine(s);
+            if (s.IndexOf(path + Path.GetFileNameWithoutExtension(NodejsUrl)) == -1)
+            {
+                Environment.SetEnvironmentVariable("path", path + Path.GetFileNameWithoutExtension(NodejsUrl) + ";" + s, EnvironmentVariableTarget.Machine);
+                NeedRestartEventHandle();
+            }
         }
 
         public static void Fix()
