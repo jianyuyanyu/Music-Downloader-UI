@@ -18,7 +18,7 @@ namespace MusicDownloader.Library
     {
         public List<int> version = new List<int> { 1, 5, 1 };
         public bool Beta = false;
-        private readonly string UpdateJsonUrl = "https://json.nite07.com/MusicDownloader.json";
+        private readonly string UpdateJsonUrl = "";
         //public string api1 = "";
         //public string api2 = "";
         public bool canJumpToBlog = true;
@@ -38,7 +38,7 @@ namespace MusicDownloader.Library
         //public string NeteaseApiUrl = "";
         public string QQApiUrl = "";
         public string cookie = ""; //可写死
-        public string _cookie = "__remember_me=true; Max-Age=1296000; Expires=Thu, 3 Jun 2021 11:53:52 GMT; Path=/;;MUSIC_U=1a3646e3a37f5c386570fdcf1daf4f81a32a893cce6f12bc85b3d93c200e8e110931c3a9fbfe3df2; Max-Age=1296000; Expires=Thu, 3 Jun 2021 11:53:52 GMT; Path=/;;NMTID=00OJAkEohli8PNuQEybjdZM_D3C2rkAAAF5hHmb_A; Max-Age=315360000; Expires=Sat, 17 May 2031 11:53:52 GMT; Path=/;;__csrf=7f55f3eebda65620c5c7282b5a789849; Max-Age=1296010; Expires=Thu, 3 Jun 2021 11:54:02 GMT; Path=/;";
+        public string _cookie = "";
         #endregion
 
         public CloudMusicApi capi = new CloudMusicApi();
