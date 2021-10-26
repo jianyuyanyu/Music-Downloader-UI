@@ -430,7 +430,7 @@ namespace MusicDownloader
             {
                 if (music.canJumpToBlog)
                 {
-                    Process.Start("https://www.nite07.com/MusicDownloaderUIHelp/");
+                    Process.Start("https://www.nite07.com/musicdownloaderuihelp/");
                     Home.IsChecked = true;
                 }
                 else
