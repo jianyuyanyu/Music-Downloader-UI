@@ -1,6 +1,5 @@
 # Music-Downloader-UI
 WPF+C# 编写的音乐下载器<br>
-[博客文章](https://www.nitianblog.com/?p=496)
 
 ## 运行截图
 ![界面](/Music-Downloader-UI/Images/PIC.png)
